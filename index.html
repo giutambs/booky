@@ -472,16 +472,19 @@
   .insight-card .progress-track{background:rgba(255,255,255,.25);}
   .insight-card:not(.action) .progress-track{background:var(--surface-strong);}
 
-  .week-strip{display:flex; gap:5px; justify-content:space-between;}
+  .insight-card.week-card{width:236px;}
+  .week-strip{display:flex; gap:4px; justify-content:space-between;}
   .week-day{display:flex; flex-direction:column; align-items:center; gap:5px;}
   .week-day .dot{
-    width:25px; height:25px; border-radius:50%; background:var(--surface-strong);
-    display:flex; align-items:center; justify-content:center; color:var(--ink-faint);
+    width:22px; height:22px; border-radius:50%; background:var(--surface-strong);
+    display:flex; align-items:center; justify-content:center; color:var(--paper);
     transition:background .2s var(--ease), color .2s var(--ease);
+    flex-shrink:0;
   }
-  .week-day.active .dot{background:var(--brand); color:var(--paper);}
+  .week-day .dot .msym{font-size:13px;}
+  .week-day.active .dot{background:var(--brand);}
   .week-day.today .dot{box-shadow:0 0 0 2px var(--brand); }
-  .week-day span{font-size:9.5px; color:var(--ink-soft); font-weight:700;}
+  .week-day span{font-size:9px; color:var(--ink-soft); font-weight:700;}
 
   /* ---------- Book detail ---------- */
   .detail-head{display:flex; gap:14px; margin-bottom:16px;}
@@ -1019,7 +1022,7 @@ function weekStripHtml(){
     const active = daysWithEntry.has(key);
     html += `
       <div class="week-day ${active ? 'active' : ''} ${i === 0 ? 'today' : ''}">
-        <div class="dot">${icon('menu_book', 12)}</div>
+        <div class="dot">${active ? icon('check', 13) : ''}</div>
         <span>${labels[d.getDay()]}</span>
       </div>
     `;
@@ -1311,7 +1314,7 @@ const Views = {
     }
 
     cards.push(`
-      <div class="insight-card">
+      <div class="insight-card week-card">
         <p class="ins-title">Como está a semana</p>
         <p class="ins-sub">Dias em que você registrou leitura</p>
         <div class="week-strip">${weekStripHtml()}</div>
@@ -1381,13 +1384,13 @@ const Views = {
 
     return `
       <p style="font-size:13.5px; color:var(--ink-soft);">Olá,</p>
-      <h1 class="page-title" style="margin-bottom:18px;">${escapeHtml(firstName)}</h1>
+      <h1 class="page-title" style="margin-bottom:8px;">${escapeHtml(firstName)}</h1>
 
-      ${heroHtml}
+      <div class="insight-row" style="margin-top:0;">${cards.join('')}</div>
 
-      <div class="insight-row">${cards.join('')}</div>
+      <div style="margin-top:4px;">${heroHtml}</div>
 
-      <h2 class="section-title" style="margin-top:6px;">Histórico de leitura</h2>
+      <h2 class="section-title" style="margin-top:22px;">Histórico de leitura</h2>
       ${feed || '<div class="empty-note">Nenhuma atividade ainda. Comece registrando o progresso de um livro.</div>'}
     `;
   },
