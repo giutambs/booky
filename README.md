@@ -1,39 +1,43 @@
 # Booky — leituras pessoais
 
-Um diário de leitura pessoal: cada pessoa cria sua própria conta e mantém sua
-estante, avaliações e progresso de leitura em privado.
+Um diário de leitura pessoal em um único arquivo (`index.html`), sem
+backend: cada pessoa cria sua própria conta e mantém sua estante,
+avaliações, progresso e citações direto no navegador.
 
-Inspirado no app de clube do livro, mas redesenhado para uso individual:
-sem membros fixos, sem dados compartilhados — cada login é único e criado
-pelo próprio usuário.
+## Como usar
 
-## Stack
+Basta abrir `index.html` num navegador, ou publicar no GitHub Pages
+(Settings → Pages → deploy a partir da branch). Não há build, nem
+instalação de dependências.
 
-- **Next.js 15** (App Router) + TypeScript
-- **Tailwind CSS v4** — paleta própria baseada em `#263C20`
-- **Poppins** (títulos) + **Inter** (texto) via `next/font`
-- **Prisma + SQLite** — banco local, fácil de trocar por Postgres depois
-- **NextAuth v5** (Credentials) — login/senha reais, com senha criptografada (bcrypt)
+## Como funciona
 
-## Funcionalidades
+- **Contas**: cada pessoa cria login (nome, e-mail, senha) pelo próprio
+  app. As contas e os dados de leitura ficam salvos no `localStorage` do
+  navegador — por enquanto local a cada dispositivo/navegador, sem
+  sincronização entre aparelhos (isso exigiria um backend, que pode ser
+  adicionado depois se fizer sentido). As senhas são guardadas com hash
+  SHA-256, nunca em texto puro.
+- **Busca de livros**: a tela de Busca consulta a API pública do
+  [Open Library](https://openlibrary.org/dev/docs/api/search) para trazer
+  título, autor(a) e capa reais. Se a busca falhar (sem internet, por
+  exemplo), é possível adicionar o livro manualmente.
+- **Ícones**: todos em SVG, desenhados no próprio arquivo — sem nenhuma
+  dependência externa de JS.
+- **Fonte**: [Manrope](https://fonts.google.com/specimen/Manrope), via
+  Google Fonts.
 
-- Cadastro e login por e-mail/senha (contas únicas, uma por pessoa)
-- **Início**: livro atual, estatísticas rápidas (livros lidos, meses seguidos, nota média) e atividade recente
-- **Estante**: grade de livros com busca e filtro por status (quero ler / lendo / lido / abandonado)
-- **Adicionar livro**: título, autor(a), capa (URL opcional), páginas, status inicial
-- **Detalhe do livro**: mudar status, avaliar com estrelas, registrar progresso de leitura com nota, humor (emoji) e marcação de spoiler — cada registro fica no histórico do livro
-- **Perfil**: estatísticas gerais e livros lidos por ano, logout
+## Navegação
 
-## Como rodar localmente
+- **Início** — livro atual, estatísticas rápidas, atividade recente
+- **Estante** — grade de livros, busca local e filtro por status
+- **+** — adicionar livro manualmente
+- **Busca** — buscar um livro real (Open Library) para adicionar
+- **Menu** — Perfil, Estatísticas, Configurações
 
-```bash
-npm install
-cp .env.example .env      # ajuste o AUTH_SECRET se quiser
-npx prisma migrate dev    # cria o banco SQLite local
-npm run dev
-```
-
-Acesse [http://localhost:3000](http://localhost:3000) e crie sua conta.
+Dentro do livro: mudar status (quero ler / lendo / lido / abandonado),
+avaliar com estrelas, registrar progresso com anotação ou citação
+(com opção de marcar como spoiler).
 
 ## Paleta de cores
 
@@ -50,11 +54,7 @@ Acesse [http://localhost:3000](http://localhost:3000) e crie sua conta.
 
 ## Próximos passos possíveis
 
-- Upload de capa (em vez de só URL)
-- Recuperação de senha por e-mail
-- "Retrospectiva do ano" pessoal (estilo wrapped)
-- Exportar/importar estante
-- Deploy (Vercel + Postgres, por exemplo)
-
-Este é um primeiro projeto para revisão — o fluxo principal (cadastro, estante,
-progresso e estatísticas) está funcional e testado ponta a ponta.
+- Logo e ícones de app (favicon, PWA)
+- Backend real para contas sincronizadas entre dispositivos
+- Recuperação de senha
+- Upload de capa própria
