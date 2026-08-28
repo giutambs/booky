@@ -9,7 +9,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300..600,0..1,-25..200&display=block" rel="stylesheet">
 
 <style>
   :root{
@@ -20,17 +20,21 @@
     --sage-soft:#DBE6D4;
     --accent:#C98A3E;
     --accent-soft:#F1DECB;
-    --paper:#FAF6EC;
-    --surface:#FFFDF8;
-    --border:#E5DDC8;
+    --paper:#FFFFFF;
+    --surface:#F2F4EE;
+    --surface-strong:#E9ECE3;
+    --border:#E9EBE3;
     --ink:#22301D;
     --ink-soft:#5C6B54;
     --ink-faint:#97A190;
     --danger:#B5482E;
-    --danger-soft:#F3DCD5;
-    --radius-lg:22px;
-    --radius-md:16px;
-    --radius-sm:12px;
+    --danger-soft:#FAE4DE;
+    --radius-lg:26px;
+    --radius-md:18px;
+    --radius-sm:14px;
+    --ease:cubic-bezier(.4,0,.2,1);
+    --shadow-sm:0 1px 2px rgba(34,48,29,.05);
+    --shadow-md:0 10px 26px rgba(34,48,29,.08);
   }
 
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
@@ -44,11 +48,34 @@
   }
   h1,h2,h3,h4{margin:0; font-weight:800; letter-spacing:-0.01em;}
   p{margin:0;}
-  button{font-family:inherit; cursor:pointer;}
+  button{font-family:inherit; cursor:pointer; border:none; background:none; -webkit-appearance:none; appearance:none;}
   input,textarea,select{font-family:inherit;}
   ::selection{background:var(--sage-soft); color:var(--brand-dark);}
   a{color:inherit;}
   img{display:block; max-width:100%;}
+
+  .msym{
+    font-family:'Material Symbols Outlined';
+    font-weight:normal; font-style:normal;
+    display:inline-block; line-height:1; white-space:nowrap;
+    word-wrap:normal; direction:ltr;
+    -webkit-font-smoothing:antialiased;
+    font-feature-settings:'liga';
+    font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24;
+    vertical-align:middle;
+    user-select:none;
+    transition:font-variation-settings .25s cubic-bezier(.4,0,.2,1), color .15s;
+  }
+  .msym.filled{ font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24; }
+
+  ::view-transition-old(root),
+  ::view-transition-new(root){
+    animation-duration:.26s;
+    animation-timing-function:cubic-bezier(.4,0,.2,1);
+  }
+
+  @keyframes fade-up{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+  .fade-in{animation:fade-up .4s var(--ease) both;}
 
   #app{
     max-width:460px;
@@ -83,10 +110,9 @@
   .auth-card{
     width:100%;
     background:var(--surface);
-    border:1px solid var(--border);
     border-radius:var(--radius-lg);
     padding:24px;
-    box-shadow:0 4px 18px rgba(38,60,32,0.06);
+    box-shadow:var(--shadow-md);
   }
   .field{display:flex; flex-direction:column; gap:6px; margin-bottom:14px;}
   .field label{font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em; color:var(--ink-soft);}
@@ -124,9 +150,10 @@
     padding:13px 18px;
     font-size:14.5px;
     font-weight:700;
-    transition:background .15s, opacity .15s;
+    transition:background .18s var(--ease), opacity .18s var(--ease), transform .12s var(--ease);
   }
   .btn:hover{background:var(--brand-dark);}
+  .btn:active{transform:scale(.98);}
   .btn:disabled{opacity:.6; cursor:default;}
   .btn-ghost{
     background:transparent;
@@ -156,9 +183,10 @@
     position:sticky; top:0; z-index:20;
     display:flex; align-items:center; justify-content:space-between;
     padding:14px 20px;
-    background:rgba(250,246,236,0.94);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--border);
+    background:rgba(255,255,255,0.85);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    box-shadow:0 1px 0 rgba(34,48,29,.06);
   }
   .brand-mark{display:flex; align-items:center; gap:9px;}
   .brand-mark .logo-chip{
@@ -189,9 +217,10 @@
   nav.bottomnav{
     position:sticky; bottom:0; z-index:20;
     display:flex; align-items:flex-end; justify-content:space-between;
-    background:rgba(255,253,248,0.96);
-    backdrop-filter:blur(8px);
-    border-top:1px solid var(--border);
+    background:rgba(255,255,255,0.88);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    box-shadow:0 -1px 0 rgba(34,48,29,.06);
     padding:8px 10px 10px;
   }
   .nav-item{
@@ -207,6 +236,7 @@
   }
   .nav-item.active{color:var(--brand);}
   .nav-item.active .nav-ico{background:var(--sage-soft);}
+  .nav-item.active .msym{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
   .nav-item.nav-center{flex:0 0 auto; margin:0 4px;}
   .nav-item.nav-center .nav-ico{
     width:50px; height:50px; border-radius:50%;
@@ -226,11 +256,11 @@
 
   .card{
     background:var(--surface);
-    border:1px solid var(--border);
     border-radius:var(--radius-lg);
     padding:16px;
+    box-shadow:var(--shadow-sm);
   }
-  .card-tap{transition:transform .12s, box-shadow .12s;}
+  .card-tap{transition:transform .18s var(--ease), box-shadow .18s var(--ease);}
   .card-tap:active{transform:scale(0.98);}
   a.card-tap, .card-tap[role="button"]{text-decoration:none; display:block; color:inherit;}
 
@@ -242,13 +272,12 @@
     color:var(--ink-soft);
     font-size:13.5px;
   }
-  .empty-note svg{margin-bottom:8px; color:var(--ink-faint);}
+  .empty-note .msym{margin-bottom:8px; color:var(--ink-faint);}
 
   .stat-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:10px;}
   .stat-grid.cols-2{grid-template-columns:repeat(2,1fr);}
   .stat-box{
     background:var(--surface);
-    border:1px solid var(--border);
     border-radius:var(--radius-md);
     padding:15px 6px;
     text-align:center;
@@ -269,28 +298,30 @@
   .status-abandonado{background:var(--border); color:var(--ink-soft);}
 
   .chip{
-    border:1px solid var(--border);
+    border:none;
     background:var(--surface);
     border-radius:999px;
     padding:7px 14px;
     font-size:12.5px; font-weight:700;
     color:var(--ink-soft);
     white-space:nowrap;
+    transition:background .18s var(--ease), color .18s var(--ease), transform .12s var(--ease);
   }
-  .chip.active{background:var(--brand); border-color:var(--brand); color:var(--paper);}
+  .chip:active{transform:scale(.96);}
+  .chip.active{background:var(--brand); color:var(--paper);}
   .chip-row{display:flex; gap:8px; overflow-x:auto; padding-bottom:2px; margin-bottom:16px;}
   .chip-row::-webkit-scrollbar{display:none;}
 
   .search-box{position:relative; margin-bottom:14px;}
-  .search-box svg{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink-faint);}
+  .search-box .msym{position:absolute; left:14px; top:50%; transform:translateY(-50%); color:var(--ink-faint);}
   .search-box input{padding-left:40px;}
 
   .book-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
   .book-card{
     background:var(--surface);
-    border:1px solid var(--border);
     border-radius:var(--radius-md);
     overflow:hidden;
+    box-shadow:var(--shadow-sm);
   }
   .book-cover{
     width:100%; aspect-ratio:3/4;
@@ -314,8 +345,10 @@
 
   .book-list-row{
     display:flex; align-items:center; gap:12px;
-    background:var(--surface); border:1px solid var(--border);
+    background:var(--surface);
     border-radius:var(--radius-md); padding:9px; margin-bottom:9px;
+    box-shadow:var(--shadow-sm);
+    transition:transform .15s var(--ease), box-shadow .15s var(--ease);
   }
   .book-list-row .thumb{width:38px; height:52px; border-radius:8px; overflow:hidden; flex-shrink:0;}
   .book-list-row .meta{min-width:0; flex:1;}
@@ -328,7 +361,7 @@
   .stars{display:flex; gap:5px;}
   .star-btn{background:none; border:none; padding:2px; color:var(--border); display:flex;}
   .star-btn.filled{color:var(--accent);}
-  .star-btn svg{width:24px; height:24px;}
+  .star-btn .msym{font-size:24px;}
 
   .mood-row{display:flex; gap:8px;}
   .mood-btn{
@@ -351,8 +384,9 @@
   .type-toggle button.active{background:var(--brand); border-color:var(--brand); color:var(--paper);}
 
   .entry-item{
-    background:var(--surface); border:1px solid var(--border);
+    background:var(--surface);
     border-radius:var(--radius-md); padding:13px; margin-bottom:10px;
+    box-shadow:var(--shadow-sm);
   }
   .entry-head{display:flex; align-items:center; justify-content:between; gap:8px; margin-bottom:7px; font-size:11.5px; color:var(--ink-faint);}
   .entry-head .ico{width:26px; height:26px; border-radius:8px; background:var(--sage-soft); color:var(--brand-dark); display:flex; align-items:center; justify-content:center; flex-shrink:0;}
@@ -362,6 +396,92 @@
   .entry-text.spoiler:active, .entry-text.spoiler.revealed{filter:none;}
 
   .feed-book-tag{font-size:11.5px; font-weight:700; color:var(--brand);}
+
+  /* ---------- Feed entry (histórico de leitura) ---------- */
+  .feed-entry{
+    background:var(--surface); border-radius:var(--radius-lg);
+    padding:16px; margin-bottom:12px; box-shadow:var(--shadow-sm);
+  }
+  .feed-entry-head{display:flex; align-items:flex-start; gap:10px; margin-bottom:11px; position:relative;}
+  .feed-entry-who{flex:1; min-width:0;}
+  .feed-entry-who .name{font-size:13.5px; font-weight:800; color:var(--ink); line-height:1.3;}
+  .feed-entry-who .action{font-size:12px; color:var(--ink-soft); margin-top:1px;}
+  .feed-entry-date{font-size:11px; color:var(--ink-faint); white-space:nowrap; margin-top:2px; flex-shrink:0;}
+  .feed-entry-menu-btn{
+    width:26px; height:26px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; color:var(--ink-faint);
+    transition:background .15s var(--ease);
+  }
+  .feed-entry-menu-btn:hover{background:var(--surface-strong);}
+  .feed-entry-menu{
+    position:absolute; top:32px; right:0; z-index:10;
+    background:var(--paper); border-radius:var(--radius-sm); box-shadow:var(--shadow-md);
+    overflow:hidden; display:none; width:190px;
+  }
+  .feed-entry-menu.open{display:block;}
+  .feed-entry-menu button{
+    display:flex; align-items:center; gap:8px; width:100%; padding:11px 14px;
+    font-size:13px; color:var(--danger); text-align:left;
+  }
+  .feed-entry-menu button:hover{background:var(--danger-soft);}
+  .feed-entry-progress{margin:12px 0 4px;}
+  .feed-entry-progress .est-row{display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:var(--ink-faint); margin-bottom:6px;}
+  .feed-entry-progress .pct-row{display:flex; align-items:center; justify-content:space-between; font-size:12px; margin-top:6px;}
+  .feed-entry-progress .pct-row .pct{font-weight:800; color:var(--brand);}
+  .feed-entry-progress .pct-row .pages{color:var(--ink-soft);}
+  .feed-entry-book{
+    display:flex; align-items:center; gap:10px; margin-top:13px;
+    background:var(--paper); border-radius:var(--radius-md); padding:8px;
+    transition:transform .15s var(--ease), box-shadow .15s var(--ease);
+  }
+  .feed-entry-book:active{transform:scale(.98);}
+  .feed-entry-book .thumb{width:36px; height:50px; border-radius:7px; overflow:hidden; flex-shrink:0;}
+  .feed-entry-book .meta{min-width:0; flex:1;}
+  .feed-entry-book .meta p:first-child{font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .feed-entry-book .meta p:last-child{font-size:11px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+
+  /* ---------- Insight carousel (início) ---------- */
+  .insight-row{
+    display:flex; gap:12px; overflow-x:auto;
+    margin:18px -20px 0; padding:2px 20px 12px;
+    scroll-snap-type:x proximity;
+  }
+  .insight-row::-webkit-scrollbar{display:none;}
+  .insight-card{
+    flex:0 0 auto; width:196px; scroll-snap-align:start;
+    background:var(--surface); border-radius:var(--radius-lg); padding:16px;
+    box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:9px;
+    text-decoration:none; color:inherit;
+  }
+  .insight-card.action{background:var(--brand); color:var(--paper);}
+  .insight-card.action .star-btn{color:rgba(255,255,255,.35);}
+  .insight-card .ins-title{font-size:13px; font-weight:800; line-height:1.25;}
+  .insight-card:not(.action) .ins-sub{color:var(--ink-soft);}
+  .insight-card.action .ins-sub{color:var(--sage-soft); opacity:.95;}
+  .insight-card .ins-sub{font-size:11.5px; line-height:1.4;}
+  .insight-card .ins-num{font-size:27px; font-weight:800; margin:1px 0 -2px;}
+  .insight-card .ins-book{display:flex; align-items:center; gap:8px;}
+  .insight-card .ins-book .thumb{width:32px; height:46px; border-radius:7px; overflow:hidden; flex-shrink:0;}
+  .insight-card .ins-book .title{font-size:11.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .insight-card .ins-cta{
+    margin-top:auto; align-self:flex-start;
+    background:var(--paper); color:var(--brand);
+    border-radius:999px; padding:8px 16px; font-size:12.5px; font-weight:800;
+  }
+  .insight-card:not(.action) .ins-cta{background:var(--brand); color:var(--paper);}
+  .insight-card .progress-track{background:rgba(255,255,255,.25);}
+  .insight-card:not(.action) .progress-track{background:var(--surface-strong);}
+
+  .week-strip{display:flex; gap:5px; justify-content:space-between;}
+  .week-day{display:flex; flex-direction:column; align-items:center; gap:5px;}
+  .week-day .dot{
+    width:25px; height:25px; border-radius:50%; background:var(--surface-strong);
+    display:flex; align-items:center; justify-content:center; color:var(--ink-faint);
+    transition:background .2s var(--ease), color .2s var(--ease);
+  }
+  .week-day.active .dot{background:var(--brand); color:var(--paper);}
+  .week-day.today .dot{box-shadow:0 0 0 2px var(--brand); }
+  .week-day span{font-size:9.5px; color:var(--ink-soft); font-weight:700;}
 
   /* ---------- Book detail ---------- */
   .detail-head{display:flex; gap:14px; margin-bottom:16px;}
@@ -374,8 +494,8 @@
   .status-menu-wrap{position:relative; display:inline-block;}
   .status-menu-dropdown{
     position:absolute; top:calc(100% + 6px); left:0; z-index:15;
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-sm);
-    box-shadow:0 10px 24px rgba(38,60,32,0.15);
+    background:var(--paper); border-radius:var(--radius-sm);
+    box-shadow:var(--shadow-md);
     width:170px; overflow:hidden; display:none;
   }
   .status-menu-dropdown.open{display:block;}
@@ -389,26 +509,35 @@
   /* ---------- Modal ---------- */
   .modal-overlay{
     position:fixed; inset:0; z-index:50;
-    background:rgba(34,48,29,0.42);
-    display:none; align-items:flex-end; justify-content:center;
+    display:flex; align-items:flex-end; justify-content:center;
+    background:rgba(26,43,22,0);
+    opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity .28s var(--ease), background .28s var(--ease), visibility 0s linear .28s;
   }
-  .modal-overlay.open{display:flex;}
+  .modal-overlay.open{
+    opacity:1; visibility:visible; pointer-events:auto;
+    background:rgba(26,43,22,0.45);
+    transition:opacity .28s var(--ease), background .28s var(--ease);
+  }
   .modal-sheet{
     width:100%; max-width:460px;
-    background:var(--surface);
-    border-radius:26px 26px 0 0;
+    background:var(--paper);
+    border-radius:28px 28px 0 0;
     padding:22px 20px calc(22px + env(safe-area-inset-bottom));
     max-height:88vh; overflow-y:auto;
-    animation:sheet-up .2s ease-out;
+    box-shadow:0 -12px 40px rgba(26,43,22,.18);
+    transform:translateY(28px);
+    transition:transform .32s var(--ease);
   }
-  @keyframes sheet-up{from{transform:translateY(24px); opacity:0;} to{transform:translateY(0); opacity:1;}}
+  .modal-overlay.open .modal-sheet{ transform:translateY(0); }
   .modal-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:16px;}
   .modal-head h3{font-size:17px;}
 
   .result-card{
     display:flex; gap:11px; align-items:center;
-    padding:9px; border-radius:var(--radius-md); border:1px solid var(--border);
-    background:var(--paper); margin-bottom:9px;
+    padding:9px; border-radius:var(--radius-md);
+    background:var(--surface); margin-bottom:9px;
+    transition:transform .15s var(--ease), box-shadow .15s var(--ease);
   }
   .result-card .thumb{width:40px; height:56px; border-radius:8px; overflow:hidden; flex-shrink:0; background:var(--sage-soft);}
   .result-card .meta{flex:1; min-width:0;}
@@ -417,9 +546,10 @@
 
   .menu-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .menu-card{
-    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-lg);
+    background:var(--surface); border-radius:var(--radius-lg);
     padding:20px 16px; display:flex; flex-direction:column; gap:14px;
     text-align:left; align-items:flex-start;
+    box-shadow:var(--shadow-sm);
   }
   .menu-card .ico{
     width:42px; height:42px; border-radius:13px; background:var(--sage-soft); color:var(--brand-dark);
@@ -452,7 +582,7 @@
 
   <!-- ===================== AUTH SCREEN ===================== -->
   <div id="auth-screen">
-    <div class="auth-logo"><i data-icon="book-open" data-size="28"></i></div>
+    <div class="auth-logo"><span class="msym" style="font-size:28px">auto_stories</span></div>
     <h1 class="auth-title" id="auth-title">Bem-vindo de volta</h1>
     <p class="auth-sub" id="auth-sub">Entre para continuar de onde parou na sua estante.</p>
 
@@ -468,7 +598,7 @@
           <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
         </div>
         <button class="btn" type="submit" id="login-submit">
-          <i data-icon="log-in" data-size="16"></i> Entrar
+          <span class="msym" style="font-size:16px">login</span> Entrar
         </button>
       </form>
 
@@ -486,7 +616,7 @@
           <input type="password" id="signup-password" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
         </div>
         <button class="btn" type="submit" id="signup-submit">
-          <i data-icon="user-plus" data-size="16"></i> Criar minha conta
+          <span class="msym" style="font-size:16px">person_add</span> Criar minha conta
         </button>
       </form>
     </div>
@@ -500,13 +630,13 @@
   <div id="app-shell">
     <header class="topbar">
       <div class="brand-mark">
-        <div class="logo-chip"><i data-icon="book-open" data-size="17"></i></div>
+        <div class="logo-chip"><span class="msym" style="font-size:17px">auto_stories</span></div>
         <span>Booky</span>
       </div>
       <div class="topbar-actions">
         <div class="avatar" id="topbar-avatar">–</div>
         <button class="icon-btn" title="Sair" onclick="Auth.logout()">
-          <i data-icon="power" data-size="17"></i>
+          <span class="msym" style="font-size:17px">power_settings_new</span>
         </button>
       </div>
     </header>
@@ -515,23 +645,23 @@
 
     <nav class="bottomnav">
       <button class="nav-item" data-nav="inicio" onclick="Router.go('inicio')">
-        <span class="nav-ico"><i data-icon="home" data-size="19"></i></span>
+        <span class="nav-ico"><span class="msym" style="font-size:19px">home</span></span>
         Início
       </button>
       <button class="nav-item" data-nav="estante" onclick="Router.go('estante')">
-        <span class="nav-ico"><i data-icon="library" data-size="19"></i></span>
+        <span class="nav-ico"><span class="msym" style="font-size:19px">collections_bookmark</span></span>
         Estante
       </button>
       <button class="nav-item nav-center" onclick="Modals.openQuickAdd()">
-        <span class="nav-ico"><i data-icon="plus" data-size="22"></i></span>
+        <span class="nav-ico"><span class="msym" style="font-size:22px">add</span></span>
         <span>&nbsp;</span>
       </button>
       <button class="nav-item" data-nav="busca" onclick="Router.go('busca')">
-        <span class="nav-ico"><i data-icon="search" data-size="19"></i></span>
+        <span class="nav-ico"><span class="msym" style="font-size:19px">search</span></span>
         Busca
       </button>
       <button class="nav-item" data-nav="menu" onclick="Router.go('menu')">
-        <span class="nav-ico"><i data-icon="menu" data-size="19"></i></span>
+        <span class="nav-ico"><span class="msym" style="font-size:19px">menu</span></span>
         Menu
       </button>
     </nav>
@@ -544,7 +674,7 @@
   <div class="modal-sheet">
     <div class="modal-head">
       <h3>Adicionar livro</h3>
-      <button class="icon-btn" onclick="Modals.close('modal-quick-add')"><i data-icon="x" data-size="18"></i></button>
+      <button class="icon-btn" onclick="Modals.close('modal-quick-add')"><span class="msym" style="font-size:18px">close</span></button>
     </div>
     <form onsubmit="return Books.handleQuickAdd(event)">
       <div class="field">
@@ -577,7 +707,7 @@
   <div class="modal-sheet">
     <div class="modal-head">
       <h3>Adicionar à estante</h3>
-      <button class="icon-btn" onclick="Modals.close('modal-search-add')"><i data-icon="x" data-size="18"></i></button>
+      <button class="icon-btn" onclick="Modals.close('modal-search-add')"><span class="msym" style="font-size:18px">close</span></button>
     </div>
     <div id="search-add-preview"></div>
     <div class="field">
@@ -597,7 +727,7 @@
   <div class="modal-sheet">
     <div class="modal-head">
       <h3 id="confirm-title">Tem certeza?</h3>
-      <button class="icon-btn" onclick="Modals.close('modal-confirm')"><i data-icon="x" data-size="18"></i></button>
+      <button class="icon-btn" onclick="Modals.close('modal-confirm')"><span class="msym" style="font-size:18px">close</span></button>
     </div>
     <p id="confirm-message" style="font-size:13.5px; color:var(--ink-soft); margin-bottom:18px; line-height:1.5;"></p>
     <div style="display:flex; gap:10px;">
@@ -611,53 +741,13 @@
 
 <script>
 /* =========================================================
-   ICONS (inline SVG — sem dependências externas)
+   ICONS (Material Symbols via Google Fonts)
 ========================================================= */
-const ICONS = {
-  'book-open': '<path d="M12 6.2C9.8 4.7 6.8 4.2 4 5v13c2.8-.8 5.8-.3 8 1.2 2.2-1.5 5.2-2 8-1.2V5c-2.8-.8-5.8-.3-8 1.2Z"/><path d="M12 6.2V19.2"/>',
-  'log-in': '<path d="M13 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 8l4 4-4 4"/><path d="M14 12H3"/>',
-  'user-plus': '<circle cx="9" cy="8.2" r="3.3"/><path d="M3 20c0-3.6 2.7-6.2 6-6.2s6 2.6 6 6.2"/><path d="M18.5 8v5M16 10.5h5"/>',
-  power: '<path d="M12 3v8"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/>',
-  home: '<path d="M4 11 12 4l8 7"/><path d="M6 10v9h12v-9"/>',
-  library: '<rect x="3.5" y="4" width="4.5" height="16" rx="1"/><rect x="10" y="4" width="4.5" height="16" rx="1"/><path d="M17 5.6l3.2 14.6" stroke-width="2.2"/>',
-  plus: '<path d="M12 5v14M5 12h14"/>',
-  search: '<circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.3-4.3"/>',
-  menu: '<path d="M4 6h16M4 12h16M4 18h16"/>',
-  user: '<circle cx="12" cy="8" r="3.5"/><path d="M4.5 20c0-4.1 3.4-7 7.5-7s7.5 2.9 7.5 7"/>',
-  'bar-chart-2': '<path d="M6 20V10"/><path d="M12 20V4"/><path d="M18 20v-7"/>',
-  settings: '<circle cx="12" cy="12" r="3.2"/><path d="M12 3v2.6M12 18.4V21M21 12h-2.6M5.6 12H3M18.4 5.6l-1.8 1.8M7.4 16.6l-1.8 1.8M18.4 18.4l-1.8-1.8M7.4 7.4 5.6 5.6"/>',
-  'arrow-left': '<path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/>',
-  'arrow-right': '<path d="M5 12h14"/><path d="M13 6l6 6-6 6"/>',
-  'chevron-down': '<path d="M6 9l6 6 6-6"/>',
-  'chevron-right': '<path d="M9 6l6 6-6 6"/>',
-  star: '<path d="M12 2 14.35 8.76 21.51 8.91 15.8 13.24 17.88 20.09 12 16 6.12 20.09 8.2 13.24 2.49 8.91 9.65 8.76Z"/>',
-  'trash-2': '<path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6M14 11v6"/>',
-  smile: '<circle cx="12" cy="12" r="9"/><path d="M8.5 14c1 1.3 2.2 2 3.5 2s2.5-.7 3.5-2"/><path d="M9 9h.01M15 9h.01"/>',
-  meh: '<circle cx="12" cy="12" r="9"/><path d="M8.5 15h7"/><path d="M9 9h.01M15 9h.01"/>',
-  frown: '<circle cx="12" cy="12" r="9"/><path d="M8.5 16c1-1.3 2.2-2 3.5-2s2.5.7 3.5 2"/><path d="M9 9h.01M15 9h.01"/>',
-  flame: '<path d="M12 21.5c3.9 0 6.5-2.6 6.5-6.3 0-2.8-1.8-4.7-2.8-6.5-.3 1.9-1.4 2.8-2.3 1.9-.9-1.4.4-3.3-1-5.8-2.3 1.9-6 5.6-6 10.2 0 3.7 2.5 6.5 5.6 6.5Z"/>',
-  moon: '<path d="M20 14.2A8.3 8.3 0 1 1 9.8 4a7 7 0 0 0 10.2 10.2Z"/>',
-  'message-square': '<rect x="4" y="5" width="16" height="11" rx="2.5"/><path d="M8.5 16 5.5 19v-3"/>',
-  quote: '<path d="M7.5 8.2C5.6 8.2 4.2 9.7 4.2 11.6c0 1.9 1.3 3.2 2.8 3.2-.2 1.7-1.3 2.8-2.8 3.2v1.7c2.8-.6 4.9-2.8 4.9-6.2v-5.3Z"/><path d="M16.5 8.2c-1.9 0-3.3 1.5-3.3 3.4 0 1.9 1.3 3.2 2.8 3.2-.2 1.7-1.3 2.8-2.8 3.2v1.7c2.8-.6 4.9-2.8 4.9-6.2V8.2Z"/>',
-  x: '<path d="M6 6l12 12"/><path d="M18 6L6 18"/>',
-  download: '<path d="M12 4v11"/><path d="M7.5 11.5 12 16l4.5-4.5"/><path d="M5 19h14"/>',
-};
-
-function iconSVG(name, size){
-  const body = ICONS[name] || '';
-  return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${body}</svg>`;
+function icon(name, size, filled){
+  return `<span class="msym${filled ? ' filled' : ''}" style="font-size:${size}px">${name}</span>`;
 }
 
-function renderIcons(root){
-  (root || document).querySelectorAll('[data-icon]').forEach(el => {
-    const name = el.getAttribute('data-icon');
-    const size = el.getAttribute('data-size') || 18;
-    const fill = el.getAttribute('data-fill');
-    let svg = iconSVG(name, size);
-    if(fill) svg = svg.replace('fill="none"', `fill="${fill}"`);
-    el.outerHTML = svg;
-  });
-}
+function renderIcons(){ /* mantido por compatibilidade; a fonte renderiza sozinha */ }
 
 /* =========================================================
    STORAGE
@@ -757,7 +847,7 @@ const Auth = {
     const user = users.find(u => u.email === email);
     const hash = await sha256(password);
 
-    btn.disabled = false; btn.innerHTML = '<i data-icon="log-in" data-size="16"></i> Entrar';
+    btn.disabled = false; btn.innerHTML = `${icon('login', 16)} Entrar`;
     renderIcons();
 
     if(!user || user.passwordHash !== hash){
@@ -812,16 +902,16 @@ const STATUS_LABEL = {
 const STATUS_ORDER = ['quero_ler','lendo','lido','abandonado'];
 
 const MOODS = [
-  { key:'feliz', icon:'smile', label:'Gostando' },
-  { key:'emocionado', icon:'flame', label:'Empolgado' },
-  { key:'neutro', icon:'meh', label:'Neutro' },
-  { key:'triste', icon:'frown', label:'Triste' },
-  { key:'cansado', icon:'moon', label:'Cansativo' },
+  { key:'feliz', icon:'sentiment_satisfied', label:'Gostando' },
+  { key:'emocionado', icon:'local_fire_department', label:'Empolgado' },
+  { key:'neutro', icon:'sentiment_neutral', label:'Neutro' },
+  { key:'triste', icon:'sentiment_dissatisfied', label:'Triste' },
+  { key:'cansado', icon:'bedtime', label:'Cansativo' },
 ];
 
 function moodIcon(key){
   const m = MOODS.find(m => m.key === key);
-  return m ? m.icon : 'meh';
+  return m ? m.icon : 'sentiment_neutral';
 }
 
 /* =========================================================
@@ -865,6 +955,24 @@ function initials(name){
   return (name || '').trim().split(/\s+/).slice(0,2).map(p => p[0]?.toUpperCase() || '').join('');
 }
 
+async function fetchWithTimeout(url, ms=9000){
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  try{
+    return await fetch(url, { signal: controller.signal });
+  }finally{
+    clearTimeout(timer);
+  }
+}
+
+function googleBooksCover(info, highQuality=false){
+  const links = info.imageLinks;
+  if(!links) return null;
+  const src = (highQuality && links.thumbnail) ? links.thumbnail : (links.thumbnail || links.smallThumbnail);
+  if(!src) return null;
+  return src.replace('http://', 'https://').replace('&edge=curl', '').replace('zoom=1', 'zoom=2');
+}
+
 function bookCoverHtml(book, extraClass=''){
   if(book.cover){
     return `<div class="book-cover ${extraClass}"><img src="${escapeHtml(book.cover)}" alt="Capa de ${escapeHtml(book.title)}" loading="lazy"></div>`;
@@ -878,11 +986,113 @@ function starsHtml(rating, interactive, bookId){
     const filled = rating && i <= rating ? 'filled' : '';
     const onclick = interactive ? `onclick="Books.rate('${bookId}', ${i})"` : '';
     html += `<button type="button" class="star-btn ${filled}" ${onclick} ${interactive ? '' : 'disabled'}>
-      <i data-icon="star" data-size="24" ${filled ? 'data-fill="currentColor"' : ''}></i>
+      ${icon('star', 24, !!filled)}
     </button>`;
   }
   html += '</div>';
   return html;
+}
+
+const ASSUMED_MIN_PER_PAGE = 1.6; // estimativa de ritmo de leitura, usada só para o rótulo de tempo do card
+
+function formatDuration(minutes){
+  const m = Math.max(0, Math.round(minutes));
+  const h = Math.floor(m / 60);
+  const mm = m % 60;
+  if(h <= 0) return `${mm}m`;
+  return `${h}h ${String(mm).padStart(2,'0')}m`;
+}
+
+function weekStripHtml(){
+  const { entries } = Data.get();
+  const daysWithEntry = new Set(entries.map(e => {
+    const d = new Date(e.createdAt);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }));
+  const labels = ['D','S','T','Q','Q','S','S'];
+  const today = new Date();
+  let html = '';
+  for(let i = 6; i >= 0; i--){
+    const d = new Date(today);
+    d.setDate(d.getDate() - i);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    const active = daysWithEntry.has(key);
+    html += `
+      <div class="week-day ${active ? 'active' : ''} ${i === 0 ? 'today' : ''}">
+        <div class="dot">${icon('menu_book', 12)}</div>
+        <span>${labels[d.getDay()]}</span>
+      </div>
+    `;
+  }
+  return html;
+}
+
+function renderFeedEntry(entry, book, index=0){
+  if(!book) return '';
+  const isQuote = entry.type === 'quote';
+  const user = Auth.currentUser();
+  const actionLabel = isQuote ? 'Postou uma citação' : 'Fez um registro de leitura';
+
+  let progressBlock = '';
+  if(!isQuote && entry.progress != null){
+    if(book.totalPages){
+      const currentPage = Math.round((entry.progress / 100) * book.totalPages);
+      const remainingPages = Math.max(0, book.totalPages - currentPage);
+      progressBlock = `
+        <div class="feed-entry-progress">
+          <div class="est-row">
+            <span>${formatDuration(currentPage * ASSUMED_MIN_PER_PAGE)}</span>
+            <span>${formatDuration(remainingPages * ASSUMED_MIN_PER_PAGE)}</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, entry.progress)}%"></div></div>
+          <div class="pct-row">
+            <span class="pct">${entry.progress}%</span>
+            <span class="pages">${currentPage} de ${book.totalPages}</span>
+          </div>
+        </div>
+      `;
+    }else{
+      progressBlock = `
+        <div class="feed-entry-progress">
+          <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, entry.progress)}%"></div></div>
+          <div class="pct-row"><span class="pct">${entry.progress}% concluído</span></div>
+        </div>
+      `;
+    }
+  }
+
+  return `
+    <div class="feed-entry fade-in" style="animation-delay:${Math.min(index, 8) * 30}ms">
+      <div class="feed-entry-head">
+        <div class="avatar" style="width:34px; height:34px; font-size:12.5px; flex-shrink:0;">${initials(user.name)}</div>
+        <div class="feed-entry-who">
+          <p class="name">${escapeHtml(user.name)}</p>
+          <p class="action">${actionLabel}</p>
+        </div>
+        <span class="feed-entry-date">${formatDate(entry.createdAt)}</span>
+        <button type="button" class="feed-entry-menu-btn" onclick="Books.toggleEntryMenu(event,'${entry.id}')" aria-label="Mais opções">
+          ${icon('more_horiz', 18)}
+        </button>
+        <div class="feed-entry-menu" id="entry-menu-${entry.id}">
+          <button type="button" onclick="Books.deleteEntry('${entry.id}','${book.id}')">
+            ${icon('delete', 16)} Excluir registro
+          </button>
+        </div>
+      </div>
+
+      <p class="entry-text ${isQuote ? 'quote' : ''} ${entry.spoiler ? 'spoiler' : ''}" ${entry.spoiler ? `onclick="this.classList.toggle('revealed')"` : ''}>${escapeHtml(entry.text)}</p>
+
+      ${progressBlock}
+
+      <a href="#/livro/${book.id}" class="feed-entry-book card-tap">
+        <div class="thumb">${bookCoverHtml(book)}</div>
+        <div class="meta">
+          <p>${escapeHtml(book.title)}</p>
+          <p>${escapeHtml(book.author)}</p>
+        </div>
+      </a>
+    </div>
+  `;
 }
 
 function showToast(msg){
@@ -928,37 +1138,112 @@ function computeStats(){
   const totalPages = read.reduce((sum,b) => sum + (b.totalPages || 0), 0);
   const quotesCount = entries.filter(e => e.type === 'quote').length;
 
-  return { totalBooks: books.length, totalRead: read.length, readThisYear, avgRating, streak, byYear: byYearArr, ratingDist, totalPages, quotesCount };
+  // --- sequência diária (dias seguidos com pelo menos um registro) ---
+  const daysWithEntry = new Set(entries.map(e => {
+    const d = new Date(e.createdAt);
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }));
+  let dailyStreak = 0;
+  const dayCursor = new Date();
+  while(true){
+    const key = `${dayCursor.getFullYear()}-${dayCursor.getMonth()}-${dayCursor.getDate()}`;
+    if(daysWithEntry.has(key)){ dailyStreak++; dayCursor.setDate(dayCursor.getDate() - 1); }
+    else break;
+  }
+
+  // --- última reação registrada ---
+  const logEntries = [...entries].filter(e => e.type === 'log' && e.mood).sort((a,b) => b.createdAt - a.createdAt);
+  let lastMood = null;
+  if(logEntries.length){
+    const key = logEntries[0].mood;
+    const meta = MOODS.find(m => m.key === key);
+    const count = logEntries.filter(e => e.mood === key).length;
+    lastMood = { icon: meta ? meta.icon : 'sentiment_neutral', label: meta ? meta.label : 'Neutro', count };
+  }
+
+  // --- ritmo de páginas ---
+  const oneDay = 86400000;
+  const sevenDaysAgo = now.getTime() - 7 * oneDay;
+  const pagesLast7Days = read
+    .filter(b => b.finishedAt && b.finishedAt >= sevenDaysAgo)
+    .reduce((sum,b) => sum + (b.totalPages || 0), 0);
+
+  const firstActivity = Math.min(
+    ...books.map(b => b.createdAt),
+    ...entries.map(e => e.createdAt),
+    now.getTime()
+  );
+  const daysSinceStart = Math.max(1, Math.round((now.getTime() - firstActivity) / oneDay));
+  const pagesPerDay = totalPages / daysSinceStart;
+
+  const startOfYear = new Date(now.getFullYear(), 0, 1).getTime();
+  const daysThisYear = Math.max(1, Math.round((now.getTime() - startOfYear) / oneDay));
+  const pagesThisYear = read
+    .filter(b => b.finishedAt && new Date(b.finishedAt).getFullYear() === now.getFullYear())
+    .reduce((sum,b) => sum + (b.totalPages || 0), 0);
+  const pagesPerDayThisYear = pagesThisYear / daysThisYear;
+
+  // --- avaliações e resenhas ---
+  const ratedCount = ratings.length;
+  const reviewedBookIds = new Set(entries.filter(e => e.type === 'log' && e.text).map(e => e.bookId));
+  const reviewedCount = read.filter(b => reviewedBookIds.has(b.id)).length;
+
+  const readByRecent = [...read].sort((a,b) => (b.finishedAt||0) - (a.finishedAt||0));
+  const unratedFinished = readByRecent.find(b => !b.rating) || null;
+  const unreviewedFinished = readByRecent.find(b => !reviewedBookIds.has(b.id)) || null;
+
+  return {
+    totalBooks: books.length, totalRead: read.length, readThisYear, avgRating, streak, byYear: byYearArr,
+    ratingDist, totalPages, quotesCount, dailyStreak, lastMood, pagesLast7Days, pagesPerDay, pagesThisYear,
+    pagesPerDayThisYear, ratedCount, reviewedCount, unratedFinished, unreviewedFinished,
+  };
 }
 
 /* =========================================================
    VIEW RENDERING
 ========================================================= */
 const View = {
+  _lastView: null,
+
   render(view, params){
     document.querySelectorAll('.nav-item[data-nav]').forEach(el => {
       el.classList.toggle('active', el.dataset.nav === (view === 'livro' ? 'estante' : (['perfil','estatisticas','configuracoes'].includes(view) ? 'menu' : view)));
     });
 
-    const container = document.getElementById('view-container');
-    let html = '';
-    switch(view){
-      case 'inicio': html = Views.inicio(); break;
-      case 'estante': html = Views.estante(); break;
-      case 'busca': html = Views.busca(); break;
-      case 'menu': html = Views.menu(); break;
-      case 'perfil': html = Views.perfil(); break;
-      case 'estatisticas': html = Views.estatisticas(); break;
-      case 'configuracoes': html = Views.configuracoes(); break;
-      case 'livro': html = Views.livro(params.id); break;
-      default: html = Views.inicio();
-    }
-    container.innerHTML = html;
-    renderIcons();
+    const apply = () => {
+      const container = document.getElementById('view-container');
+      let html = '';
+      switch(view){
+        case 'inicio': html = Views.inicio(); break;
+        case 'estante': html = Views.estante(); break;
+        case 'busca': html = Views.busca(); break;
+        case 'menu': html = Views.menu(); break;
+        case 'perfil': html = Views.perfil(); break;
+        case 'estatisticas': html = Views.estatisticas(); break;
+        case 'configuracoes': html = Views.configuracoes(); break;
+        case 'livro': html = Views.livro(params.id); break;
+        default: html = Views.inicio();
+      }
+      container.innerHTML = html;
 
-    const avatar = document.getElementById('topbar-avatar');
-    const user = Auth.currentUser();
-    if(user) avatar.textContent = initials(user.name);
+      const avatar = document.getElementById('topbar-avatar');
+      const user = Auth.currentUser();
+      if(user) avatar.textContent = initials(user.name);
+    };
+
+    // A transição animada (cross-fade) só entra em navegações reais entre abas.
+    // document.startViewTransition() adia a execução do callback de forma
+    // assíncrona — usar isso também para re-renderizações dentro da mesma view
+    // (avaliar, mudar status, publicar registro) cria uma janela onde a UI
+    // antiga ainda está no DOM, podendo perder interações em andamento.
+    const isNavigation = view !== this._lastView;
+    this._lastView = view;
+
+    if(isNavigation && document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+      document.startViewTransition(apply);
+    }else{
+      apply();
+    }
 
     if(view === 'busca') Search.init();
   },
@@ -968,44 +1253,131 @@ const Views = {
 
   inicio(){
     const user = Auth.currentUser();
-    const { books } = Data.get();
+    const { books, entries } = Data.get();
     const stats = computeStats();
     const current = [...books].filter(b => b.status === 'lendo').sort((a,b)=>b.updatedAt-a.updatedAt)[0];
-    const recent = [...books].sort((a,b)=>b.updatedAt-a.updatedAt).slice(0,4);
     const firstName = (user.name || '').trim().split(/\s+/)[0];
 
     let heroHtml;
     if(current){
+      const daysReading = current.startedAt ? Math.max(1, Math.round((Date.now() - current.startedAt) / 86400000)) : null;
       heroHtml = `
-        <div class="card card-tap" role="button" onclick="Router.go('livro',{id:'${current.id}'})" style="display:flex; gap:14px; align-items:center;">
+        <a href="#/livro/${current.id}" class="card card-tap" style="display:flex; gap:14px; align-items:center;">
           <div style="width:64px; height:90px; border-radius:12px; overflow:hidden; flex-shrink:0;">${bookCoverHtml(current)}</div>
           <div style="min-width:0; flex:1;">
-            <p style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--accent); margin-bottom:4px;">Lendo agora</p>
+            <p style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--accent); margin-bottom:4px;">Lendo agora${daysReading ? ` · dia ${daysReading}` : ''}</p>
             <h3 style="font-size:14.5px; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(current.title)}</h3>
             <p style="font-size:12.5px; color:var(--ink-soft); margin-bottom:8px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${escapeHtml(current.author)}</p>
             <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100,current.progress||0)}%"></div></div>
             <p style="font-size:11px; color:var(--ink-soft); margin-top:5px;">${current.progress||0}% concluído</p>
           </div>
-        </div>`;
+        </a>`;
     }else{
       heroHtml = `
         <button class="empty-note" style="width:100%; border:1px dashed var(--border); background:var(--surface);" onclick="Modals.openQuickAdd()">
-          <i data-icon="book-open" data-size="26"></i>
+          ${icon('auto_stories', 26)}
           <p style="font-weight:700; color:var(--ink); margin-top:8px; margin-bottom:3px;">Você não está lendo nada agora</p>
           <p>Toque para adicionar um livro à sua estante</p>
         </button>`;
     }
 
-    const recentHtml = recent.length ? recent.map(b => `
-      <div class="book-list-row card-tap" role="button" onclick="Router.go('livro',{id:'${b.id}'})">
-        <div class="thumb">${bookCoverHtml(b)}</div>
-        <div class="meta">
-          <p>${escapeHtml(b.title)}</p>
-          <p>${escapeHtml(b.author)}</p>
-        </div>
-        <span class="status-pill status-${b.status}">${STATUS_LABEL[b.status]}</span>
+    const cards = [];
+
+    if(stats.unratedFinished){
+      const b = stats.unratedFinished;
+      cards.push(`
+        <a href="#/livro/${b.id}" class="insight-card action card-tap">
+          <p class="ins-title">Avaliar leitura</p>
+          <p class="ins-sub">Terminou "${escapeHtml(b.title)}"? Avalie!</p>
+          ${starsHtml(0, false, b.id)}
+          <span class="ins-cta">Avaliar</span>
+        </a>
+      `);
+    }
+
+    if(stats.unreviewedFinished){
+      const b = stats.unreviewedFinished;
+      cards.push(`
+        <a href="#/livro/${b.id}" class="insight-card action card-tap">
+          <p class="ins-title">Fazer resenha</p>
+          <p class="ins-sub">Resenhe "${escapeHtml(b.title)}" e complete sua jornada de leitura!</p>
+          <div class="ins-book">
+            <div class="thumb">${bookCoverHtml(b)}</div>
+            <span class="title">${escapeHtml(b.title)}</span>
+          </div>
+          <span class="ins-cta">Resenhar</span>
+        </a>
+      `);
+    }
+
+    cards.push(`
+      <div class="insight-card">
+        <p class="ins-title">Como está a semana</p>
+        <p class="ins-sub">Dias em que você registrou leitura</p>
+        <div class="week-strip">${weekStripHtml()}</div>
+        <p class="ins-sub" style="display:flex; align-items:center; gap:4px; margin-top:2px;">${icon('local_fire_department', 14)} ${stats.dailyStreak} ${stats.dailyStreak === 1 ? 'dia seguido' : 'dias seguidos'}</p>
       </div>
-    `).join('') : `<div class="empty-note">Sua estante está vazia. Que tal adicionar o primeiro livro?</div>`;
+    `);
+
+    if(stats.lastMood){
+      cards.push(`
+        <div class="insight-card">
+          <p class="ins-title">Sua última reação</p>
+          <div style="display:flex; align-items:center; gap:10px; margin:2px 0;">
+            <span style="width:40px; height:40px; border-radius:50%; background:var(--sage-soft); display:flex; align-items:center; justify-content:center; color:var(--brand-dark); flex-shrink:0;">${icon(stats.lastMood.icon, 22)}</span>
+            <span style="font-size:13px; font-weight:700;">${stats.lastMood.label}</span>
+          </div>
+          <p class="ins-sub">Usada ${stats.lastMood.count} ${stats.lastMood.count === 1 ? 'vez' : 'vezes'}</p>
+        </div>
+      `);
+    }
+
+    cards.push(`
+      <div class="insight-card">
+        <p class="ins-title">Páginas do ano</p>
+        <p class="ins-num">${stats.pagesPerDayThisYear.toFixed(0)}</p>
+        <p class="ins-sub">páginas por dia</p>
+        <p class="ins-sub">${stats.pagesLast7Days} nos últimos 7 dias</p>
+      </div>
+    `);
+
+    cards.push(`
+      <div class="insight-card">
+        <p class="ins-title">Avaliações</p>
+        <div class="progress-track" style="margin-top:4px;"><div class="progress-fill" style="width:${stats.totalRead ? (stats.ratedCount/stats.totalRead)*100 : 0}%"></div></div>
+        <p class="ins-sub">${stats.ratedCount} avaliações · ${stats.totalRead} lidos</p>
+      </div>
+    `);
+
+    cards.push(`
+      <div class="insight-card">
+        <p class="ins-title">Resenhas</p>
+        <div class="progress-track" style="margin-top:4px;"><div class="progress-fill" style="width:${stats.totalRead ? (stats.reviewedCount/stats.totalRead)*100 : 0}%"></div></div>
+        <p class="ins-sub">${stats.reviewedCount} resenhas · ${stats.totalRead} lidos</p>
+      </div>
+    `);
+
+    cards.push(`
+      <div class="insight-card">
+        <p class="ins-title">Ritmo de leitura</p>
+        <p class="ins-num">${stats.pagesPerDay.toFixed(0)}</p>
+        <p class="ins-sub">páginas por dia</p>
+      </div>
+    `);
+
+    cards.push(`
+      <div class="insight-card">
+        <p class="ins-title">Dias seguidos</p>
+        <p class="ins-num">${stats.dailyStreak}</p>
+        <p class="ins-sub">${stats.dailyStreak === 1 ? 'dia lendo' : 'dias lendo'}</p>
+      </div>
+    `);
+
+    const feed = [...entries]
+      .sort((a,b) => b.createdAt - a.createdAt)
+      .slice(0, 20)
+      .map((e, i) => renderFeedEntry(e, books.find(b => b.id === e.bookId), i))
+      .join('');
 
     return `
       <p style="font-size:13.5px; color:var(--ink-soft);">Olá,</p>
@@ -1013,19 +1385,10 @@ const Views = {
 
       ${heroHtml}
 
-      <div class="stat-grid" style="margin-top:18px;">
-        <div class="stat-box"><div class="num">${stats.totalRead}</div><div class="lbl">livros lidos</div></div>
-        <div class="stat-box"><div class="num">${stats.streak}</div><div class="lbl">meses seguidos</div></div>
-        <div class="stat-box"><div class="num">${stats.avgRating ? stats.avgRating.toFixed(1) : '–'}</div><div class="lbl">nota média</div></div>
-      </div>
+      <div class="insight-row">${cards.join('')}</div>
 
-      <div class="row-between" style="margin-top:22px; margin-bottom:12px;">
-        <h2 class="section-title" style="margin:0;">Atividade recente</h2>
-        <button onclick="Router.go('estante')" style="background:none; border:none; color:var(--brand); font-size:12.5px; font-weight:700; display:flex; align-items:center; gap:3px;">
-          Ver estante <i data-icon="arrow-right" data-size="13"></i>
-        </button>
-      </div>
-      ${recentHtml}
+      <h2 class="section-title" style="margin-top:6px;">Histórico de leitura</h2>
+      ${feed || '<div class="empty-note">Nenhuma atividade ainda. Comece registrando o progresso de um livro.</div>'}
     `;
   },
 
@@ -1058,12 +1421,12 @@ const Views = {
       <div class="row-between" style="margin-bottom:16px;">
         <h1 class="page-title" style="margin:0;">Minha estante</h1>
         <button class="icon-btn" style="background:var(--brand); color:var(--paper);" onclick="Modals.openQuickAdd()">
-          <i data-icon="plus" data-size="18"></i>
+          ${icon('add', 18)}
         </button>
       </div>
 
       <div class="search-box">
-        <i data-icon="search" data-size="16"></i>
+        ${icon('search', 16)}
         <input type="search" placeholder="Buscar por título ou autor(a)" value="${escapeHtml(query)}" oninput="Views.estanteSearch(this.value)">
       </div>
 
@@ -1098,7 +1461,7 @@ const Views = {
       <h1 class="page-title" style="margin-bottom:4px;">Buscar livros</h1>
       <p class="page-sub">Encontre um livro real para adicionar à sua estante.</p>
       <div class="search-box" style="margin-bottom:6px;">
-        <i data-icon="search" data-size="16"></i>
+        ${icon('search', 16)}
         <input type="search" id="search-input" placeholder="Título ou autor(a)..." oninput="Search.onInput(this.value)">
       </div>
       <div id="search-results"></div>
@@ -1107,16 +1470,16 @@ const Views = {
 
   menu(){
     const items = [
-      ['perfil','user','Perfil'],
-      ['estatisticas','bar-chart-2','Estatísticas'],
+      ['perfil','person','Perfil'],
+      ['estatisticas','bar_chart','Estatísticas'],
       ['configuracoes','settings','Configurações'],
     ];
     return `
       <h1 class="page-title" style="margin-bottom:18px;">Menu</h1>
       <div class="menu-grid">
-        ${items.map(([view,icon,label]) => `
+        ${items.map(([view,iconName,label]) => `
           <button class="menu-card card-tap" onclick="Router.go('${view}')">
-            <span class="ico"><i data-icon="${icon}" data-size="21"></i></span>
+            <span class="ico">${icon(iconName, 21)}</span>
             <span>${label}</span>
           </button>
         `).join('')}
@@ -1132,23 +1495,8 @@ const Views = {
     const feed = [...entries]
       .sort((a,b) => b.createdAt - a.createdAt)
       .slice(0, 30)
-      .map(e => {
-        const book = books.find(b => b.id === e.bookId);
-        if(!book) return '';
-        const isQuote = e.type === 'quote';
-        return `
-          <div class="entry-item">
-            <div class="entry-head">
-              <span class="ico"><i data-icon="${isQuote ? 'quote' : moodIcon(e.mood)}" data-size="14"></i></span>
-              <div>
-                <div class="feed-book-tag">${escapeHtml(book.title)}</div>
-                <div>${formatDate(e.createdAt)}${e.progress != null ? ` · ${e.progress}%` : ''}</div>
-              </div>
-            </div>
-            <p class="entry-text ${isQuote ? 'quote' : ''} ${e.spoiler ? 'spoiler' : ''}" ${e.spoiler ? 'onclick="this.classList.toggle(\'revealed\')"' : ''}>${escapeHtml(e.text)}</p>
-          </div>
-        `;
-      }).join('');
+      .map((e, i) => renderFeedEntry(e, books.find(b => b.id === e.bookId), i))
+      .join('');
 
     return `
       <div class="card" style="display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px; margin-bottom:22px;">
@@ -1244,14 +1592,14 @@ const Views = {
 
       <h2 class="section-title">Dados</h2>
       <button class="btn btn-ghost btn-sm" style="width:100%; margin-bottom:8px; justify-content:flex-start; gap:10px;" onclick="Settings.exportData()">
-        <i data-icon="download" data-size="16"></i> Exportar meus dados (JSON)
+        ${icon('download', 16)} Exportar meus dados (JSON)
       </button>
       <button class="btn btn-ghost btn-sm" style="width:100%; margin-bottom:22px; justify-content:flex-start; gap:10px; color:var(--danger); border-color:var(--danger-soft);" onclick="Settings.confirmClearData()">
-        <i data-icon="trash-2" data-size="16"></i> Apagar todos os livros
+        ${icon('delete', 16)} Apagar todos os livros
       </button>
 
       <button class="btn btn-danger btn-sm" style="width:100%;" onclick="Auth.logout()">
-        <i data-icon="power" data-size="16"></i> Sair da conta
+        ${icon('power_settings_new', 16)} Sair da conta
       </button>
     `;
   },
@@ -1270,7 +1618,7 @@ const Views = {
       return `
         <div class="entry-item">
           <div class="entry-head">
-            <span class="ico"><i data-icon="${isQuote ? 'quote' : moodIcon(e.mood)}" data-size="14"></i></span>
+            <span class="ico">${icon(isQuote ? 'format_quote' : moodIcon(e.mood), 14)}</span>
             <div>${formatDate(e.createdAt)}${e.progress != null ? ` · ${e.progress}%` : ''}</div>
           </div>
           <p class="entry-text ${isQuote ? 'quote' : ''} ${e.spoiler ? 'spoiler' : ''}" ${e.spoiler ? 'onclick="this.classList.toggle(\'revealed\')"' : ''}>${escapeHtml(e.text)}</p>
@@ -1280,7 +1628,7 @@ const Views = {
 
     return `
       <button onclick="Router.go('estante')" style="background:none; border:none; display:flex; align-items:center; gap:6px; color:var(--ink-soft); font-size:13.5px; font-weight:700; padding:0; margin-bottom:16px;">
-        <i data-icon="arrow-left" data-size="16"></i> Voltar para a estante
+        ${icon('arrow_back', 16)} Voltar para a estante
       </button>
 
       <div class="detail-head">
@@ -1291,7 +1639,7 @@ const Views = {
           ${book.totalPages ? `<p class="pages">${book.totalPages} páginas</p>` : ''}
           <div class="status-menu-wrap">
             <button class="status-pill status-${book.status}" style="display:inline-flex; align-items:center; gap:4px;" onclick="Books.toggleStatusMenu(event)">
-              ${STATUS_LABEL[book.status]} <i data-icon="chevron-down" data-size="12"></i>
+              ${STATUS_LABEL[book.status]} ${icon('expand_more', 12)}
             </button>
             <div class="status-menu-dropdown" id="status-dropdown">
               ${STATUS_ORDER.map(s => `<button class="${s===book.status?'current':''}" onclick="Books.setStatus('${book.id}','${s}')">${STATUS_LABEL[s]}</button>`).join('')}
@@ -1317,8 +1665,8 @@ const Views = {
       <h2 class="section-title">Novo registro</h2>
       <div class="card" style="margin-bottom:20px;">
         <div class="type-toggle">
-          <button type="button" class="${logType==='log'?'active':''}" onclick="Books.setEntryType('log')"><i data-icon="message-square" data-size="14"></i> Anotação</button>
-          <button type="button" class="${logType==='quote'?'active':''}" onclick="Books.setEntryType('quote')"><i data-icon="quote" data-size="14"></i> Citação</button>
+          <button type="button" class="${logType==='log'?'active':''}" onclick="Books.setEntryType('log')">${icon('rate_review', 14)} Anotação</button>
+          <button type="button" class="${logType==='quote'?'active':''}" onclick="Books.setEntryType('quote')">${icon('format_quote', 14)} Citação</button>
         </div>
         <form onsubmit="return Books.handleAddEntry(event, '${book.id}')">
           <div class="field">
@@ -1332,7 +1680,7 @@ const Views = {
             <div class="field">
               <label>Humor</label>
               <div class="mood-row">
-                ${MOODS.map((m,i) => `<button type="button" class="mood-btn ${i===0?'active':''}" data-mood="${m.key}" title="${m.label}" onclick="Books.pickMood(this)"><i data-icon="${m.icon}" data-size="17"></i></button>`).join('')}
+                ${MOODS.map((m,i) => `<button type="button" class="mood-btn ${i===0?'active':''}" data-mood="${m.key}" title="${m.label}" onclick="Books.pickMood(this)">${icon(m.icon, 17)}</button>`).join('')}
               </div>
             </div>
           ` : ''}
@@ -1482,15 +1830,44 @@ const Books = {
       }
     });
   },
+
+  toggleEntryMenu(evt, entryId){
+    evt.preventDefault();
+    evt.stopPropagation();
+    document.querySelectorAll('.feed-entry-menu.open').forEach(el => {
+      if(el.id !== `entry-menu-${entryId}`) el.classList.remove('open');
+    });
+    const menu = document.getElementById(`entry-menu-${entryId}`);
+    if(!menu) return;
+    menu.classList.toggle('open');
+    const closeOnce = (ev) => {
+      if(!menu.contains(ev.target)){ menu.classList.remove('open'); document.removeEventListener('click', closeOnce); }
+    };
+    setTimeout(() => document.addEventListener('click', closeOnce), 0);
+  },
+
+  deleteEntry(entryId, bookId){
+    Modals.confirm({
+      title: 'Excluir registro',
+      message: 'Esse registro de leitura será removido permanentemente do seu histórico.',
+      onConfirm: () => {
+        const data = Data.get();
+        data.entries = data.entries.filter(e => e.id !== entryId);
+        Data.save(data);
+        Modals.close('modal-confirm');
+        View.render(Router.current.view, Router.current.params);
+        showToast('Registro excluído');
+      }
+    });
+  },
 };
 
 /* =========================================================
-   EXTERNAL SEARCH (Open Library)
+   EXTERNAL SEARCH (Google Books API)
 ========================================================= */
 const Search = {
   _lastQuery: '',
   _results: [],
-  _pending: null,
 
   init(){
     const results = document.getElementById('search-results');
@@ -1511,34 +1888,35 @@ const Search = {
     results.innerHTML = `<div class="search-loading">Buscando "${escapeHtml(q)}"...</div>`;
 
     try{
-      const res = await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=15&fields=key,title,author_name,cover_i,first_publish_year,number_of_pages_median`);
+      const res = await fetchWithTimeout(`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(q)}&maxResults=20&printType=books`);
       if(this._lastQuery !== q) return;
       if(!res.ok) throw new Error('bad response');
       const json = await res.json();
-      const docs = (json.docs || []).filter(d => d.title);
-      this._results = docs;
+      const items = (json.items || []).filter(it => it.volumeInfo && it.volumeInfo.title);
+      this._results = items;
 
-      if(!docs.length){
+      if(!items.length){
         results.innerHTML = `<div class="search-empty">Nenhum resultado para "${escapeHtml(q)}". <br><br>
           <button class="btn btn-sm" onclick="Modals.openQuickAdd()">Adicionar manualmente</button></div>`;
         return;
       }
 
-      results.innerHTML = docs.map((d, i) => {
-        const author = (d.author_name && d.author_name[0]) || 'Autor desconhecido';
-        const cover = d.cover_i ? `https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg` : '';
+      results.innerHTML = items.map((it, i) => {
+        const info = it.volumeInfo;
+        const author = (info.authors && info.authors[0]) || 'Autor desconhecido';
+        const cover = googleBooksCover(info);
+        const year = info.publishedDate ? info.publishedDate.slice(0, 4) : '';
         return `
-          <div class="result-card card-tap" role="button" onclick="Search.pick(${i})">
-            <div class="thumb">${cover ? `<img src="${cover}" alt="">` : ''}</div>
+          <div class="result-card card-tap fade-in" style="animation-delay:${Math.min(i, 8) * 30}ms" role="button" onclick="Search.pick(${i})">
+            <div class="thumb">${cover ? `<img src="${cover}" alt="" loading="lazy">` : ''}</div>
             <div class="meta">
-              <p>${escapeHtml(d.title)}</p>
-              <p>${escapeHtml(author)}${d.first_publish_year ? ' · ' + d.first_publish_year : ''}</p>
+              <p>${escapeHtml(info.title)}</p>
+              <p>${escapeHtml(author)}${year ? ' · ' + year : ''}</p>
             </div>
-            <i data-icon="chevron-right" data-size="16" style="color:var(--ink-faint); flex-shrink:0;"></i>
+            <span class="msym" style="font-size:16px; color:var(--ink-faint); flex-shrink:0;">chevron_right</span>
           </div>
         `;
       }).join('');
-      renderIcons();
     }catch(err){
       if(this._lastQuery !== q) return;
       results.innerHTML = `<div class="search-empty">Não foi possível buscar agora. Verifique sua conexão. <br><br>
@@ -1547,17 +1925,18 @@ const Search = {
   },
 
   pick(index){
-    const d = this._results[index];
-    if(!d) return;
-    const author = (d.author_name && d.author_name[0]) || 'Autor desconhecido';
-    const cover = d.cover_i ? `https://covers.openlibrary.org/b/id/${d.cover_i}-L.jpg` : null;
-    this._picked = { title: d.title, author, cover, totalPages: d.number_of_pages_median || null };
+    const it = this._results[index];
+    if(!it) return;
+    const info = it.volumeInfo;
+    const author = (info.authors && info.authors[0]) || 'Autor desconhecido';
+    const cover = googleBooksCover(info, true);
+    this._picked = { title: info.title, author, cover, totalPages: info.pageCount || null };
 
     document.getElementById('search-add-preview').innerHTML = `
       <div class="result-card" style="margin-bottom:16px;">
         <div class="thumb">${cover ? `<img src="${cover}" alt="">` : ''}</div>
         <div class="meta">
-          <p>${escapeHtml(d.title)}</p>
+          <p>${escapeHtml(info.title)}</p>
           <p>${escapeHtml(author)}</p>
         </div>
       </div>
