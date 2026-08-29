@@ -549,6 +549,44 @@
   .result-card .meta p:first-child{font-size:13px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .result-card .meta p:last-child{font-size:11.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
+  .quick-action-row{
+    display:flex; align-items:center; gap:14px; width:100%;
+    padding:12px 4px; text-align:left; border-radius:var(--radius-md);
+    transition:background .15s var(--ease);
+  }
+  .quick-action-row:hover{background:var(--surface);}
+  .quick-action-row:not(:last-child){margin-bottom:2px;}
+  .quick-action-row .qa-ico{
+    width:42px; height:42px; border-radius:13px; background:var(--sage-soft); color:var(--brand-dark);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+  .quick-action-row p{font-size:14px; font-weight:700; color:var(--ink); margin-bottom:2px;}
+  .quick-action-row div span{font-size:12px; color:var(--ink-soft); font-weight:400;}
+
+  /* ---------- Registrar leitura (página dedicada) ---------- */
+  .registro-header{display:flex; align-items:center; margin-bottom:16px;}
+  .registro-header h1{flex:1; text-align:center; font-size:16px; margin-right:34px;}
+  .registro-book-tag{
+    display:flex; align-items:center; gap:10px;
+    background:var(--surface); border-radius:var(--radius-md); padding:9px; margin-bottom:16px;
+  }
+  .registro-book-tag .thumb{width:36px; height:50px; border-radius:7px; overflow:hidden; flex-shrink:0;}
+  .registro-book-tag .meta{min-width:0;}
+  .registro-book-tag .meta p:first-child{font-size:13px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .registro-book-tag .meta p:last-child{font-size:11.5px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .rl-textarea{min-height:190px;}
+  .section-label{font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.03em; color:var(--ink-soft); margin-bottom:12px;}
+  .rl-hint{font-size:12.5px; color:var(--ink-soft); margin-top:9px;}
+  .rl-reaction-row{
+    display:flex; align-items:center; gap:10px; width:100%;
+    background:var(--surface); border-radius:var(--radius-md); padding:12px 14px; margin:14px 0;
+    font-size:13.5px; font-weight:700; color:var(--ink);
+  }
+  .rl-reaction-icon{
+    width:30px; height:30px; border-radius:50%; background:var(--sage-soft); color:var(--brand-dark);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+  }
+
   .menu-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
   .menu-card{
     background:var(--surface); border-radius:var(--radius-lg);
@@ -657,7 +695,7 @@
         <span class="nav-ico"><span class="msym" style="font-size:19px">collections_bookmark</span></span>
         Estante
       </button>
-      <button class="nav-item nav-center" onclick="Modals.openQuickAdd()">
+      <button class="nav-item nav-center" onclick="Modals.openQuickActions()">
         <span class="nav-ico"><span class="msym" style="font-size:22px">add</span></span>
         <span>&nbsp;</span>
       </button>
@@ -675,6 +713,33 @@
 </div>
 
 <!-- ===================== MODALS ===================== -->
+<div class="modal-overlay" id="modal-quick-actions" onclick="if(event.target===this) Modals.close('modal-quick-actions')">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3>O que você quer fazer?</h3>
+      <button class="icon-btn" onclick="Modals.close('modal-quick-actions')"><span class="msym" style="font-size:18px">close</span></button>
+    </div>
+    <button type="button" class="quick-action-row" onclick="Modals.close('modal-quick-actions'); Modals.openQuickAdd();">
+      <span class="qa-ico"><span class="msym" style="font-size:20px">add_circle</span></span>
+      <div><p>Adicionar livro</p><span>Cadastrar um novo título na estante</span></div>
+    </button>
+    <button type="button" class="quick-action-row" onclick="QuickActions.registrarLeitura()">
+      <span class="qa-ico"><span class="msym" style="font-size:20px">edit_note</span></span>
+      <div><p>Registrar leitura</p><span>Anotar progresso, citação ou reação</span></div>
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-book-picker" onclick="if(event.target===this) Modals.close('modal-book-picker')">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3>Escolha o livro</h3>
+      <button class="icon-btn" onclick="Modals.close('modal-book-picker')"><span class="msym" style="font-size:18px">close</span></button>
+    </div>
+    <div id="book-picker-list"></div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-quick-add" onclick="if(event.target===this) Modals.close('modal-quick-add')">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -1030,6 +1095,21 @@ function formatDuration(minutes){
   return `${h}h ${String(mm).padStart(2,'0')}m`;
 }
 
+function registroHintText(book, mode, value){
+  const num = Number(value) || 0;
+  if(!book.totalPages){
+    return `${Math.min(100, Math.max(0, num))}% concluído`;
+  }
+  if(mode === 'paginas'){
+    const page = Math.min(book.totalPages, Math.max(0, num));
+    const pct = Math.round((page / book.totalPages) * 100);
+    return `${page} de ${book.totalPages} páginas · ${pct}%`;
+  }
+  const pct = Math.min(100, Math.max(0, num));
+  const page = Math.round((pct / 100) * book.totalPages);
+  return `${pct}% · ${page} de ${book.totalPages} páginas`;
+}
+
 function weekStripHtml(){
   const { entries } = Data.get();
   const daysWithEntry = new Set(entries.map(e => {
@@ -1252,6 +1332,7 @@ const View = {
         case 'estatisticas': html = Views.estatisticas(); break;
         case 'configuracoes': html = Views.configuracoes(); break;
         case 'livro': html = Views.livro(params.id); break;
+        case 'registro': html = Views.registro(params.id); break;
         default: html = Views.inicio();
       }
       container.innerHTML = html;
@@ -1641,20 +1722,10 @@ const Views = {
     }
     const { entries } = Data.get();
     const bookEntries = entries.filter(e => e.bookId === book.id).sort((a,b) => b.createdAt - a.createdAt);
-    const logType = Views._entryType || 'log';
 
-    const historyHtml = bookEntries.length ? bookEntries.map(e => {
-      const isQuote = e.type === 'quote';
-      return `
-        <div class="entry-item">
-          <div class="entry-head">
-            <span class="ico">${icon(isQuote ? 'format_quote' : moodIcon(e.mood), 14)}</span>
-            <div>${formatDate(e.createdAt)}${e.progress != null ? ` · ${e.progress}%` : ''}</div>
-          </div>
-          <p class="entry-text ${isQuote ? 'quote' : ''} ${e.spoiler ? 'spoiler' : ''}" ${e.spoiler ? 'onclick="this.classList.toggle(\'revealed\')"' : ''}>${escapeHtml(e.text)}</p>
-        </div>
-      `;
-    }).join('') : `<div class="empty-note">Nenhum registro ainda. Conte como está a leitura!</div>`;
+    const historyHtml = bookEntries.length
+      ? bookEntries.map((e, i) => renderFeedEntry(e, book, i)).join('')
+      : `<div class="empty-note">Nenhum registro ainda. Conte como está a leitura!</div>`;
 
     return `
       <button onclick="Router.go('estante')" style="background:none; border:none; display:flex; align-items:center; gap:6px; color:var(--ink-soft); font-size:13.5px; font-weight:700; padding:0; margin-bottom:16px;">
@@ -1692,34 +1763,9 @@ const Views = {
         ${starsHtml(book.rating, true, book.id)}
       </div>
 
-      <h2 class="section-title">Novo registro</h2>
-      <div class="card" style="margin-bottom:20px;">
-        <div class="type-toggle">
-          <button type="button" class="${logType==='log'?'active':''}" onclick="Books.setEntryType('log')">${icon('rate_review', 14)} Anotação</button>
-          <button type="button" class="${logType==='quote'?'active':''}" onclick="Books.setEntryType('quote')">${icon('format_quote', 14)} Citação</button>
-        </div>
-        <form onsubmit="return Books.handleAddEntry(event, '${book.id}')">
-          <div class="field">
-            <textarea id="entry-text" rows="3" placeholder="${logType==='quote' ? 'Digite a citação...' : 'O que você achou até aqui?'}" required></textarea>
-          </div>
-          ${logType==='log' ? `
-            <div class="field">
-              <label>Progresso (%)</label>
-              <input type="number" id="entry-progress" min="0" max="100" value="${book.progress||0}" inputmode="numeric">
-            </div>
-            <div class="field">
-              <label>Humor</label>
-              <div class="mood-row">
-                ${MOODS.map((m,i) => `<button type="button" class="mood-btn ${i===0?'active':''}" data-mood="${m.key}" title="${m.label}" onclick="Books.pickMood(this)">${icon(m.icon, 17)}</button>`).join('')}
-              </div>
-            </div>
-          ` : ''}
-          <label class="checkbox-row" style="margin:14px 0;">
-            <input type="checkbox" id="entry-spoiler"> Contém spoiler
-          </label>
-          <button class="btn" type="submit">Publicar</button>
-        </form>
-      </div>
+      <button type="button" class="btn" style="margin-bottom:22px; display:flex; align-items:center; justify-content:center; gap:8px;" onclick="Router.go('registro',{id:'${book.id}'})">
+        ${icon('edit_note', 18)} Registrar leitura
+      </button>
 
       <h2 class="section-title">Histórico de leitura</h2>
       ${historyHtml}
@@ -1729,6 +1775,84 @@ const Views = {
           Remover livro
         </button>
       </div>
+    `;
+  },
+
+  registro(bookId){
+    const book = Data.getBook(bookId);
+    if(!book){
+      return `<div class="empty-note">Livro não encontrado. <br><br><button class="btn btn-sm" onclick="Router.go('estante')">Voltar para a estante</button></div>`;
+    }
+
+    if(Views._registroBookId !== bookId){
+      Views._registroBookId = bookId;
+      Views._entryType = 'log';
+      Views._progressMode = null;
+      Views._registroMood = null;
+    }
+
+    const entryType = Views._entryType || 'log';
+    const hasPages = !!book.totalPages;
+    let mode = Views._progressMode || (hasPages ? 'paginas' : 'porcentagem');
+    if(!hasPages) mode = 'porcentagem';
+    Views._progressMode = mode;
+
+    const currentPercent = book.progress || 0;
+    const currentPage = hasPages ? Math.round((currentPercent / 100) * book.totalPages) : null;
+    const defaultValue = mode === 'paginas' ? (currentPage ?? '') : currentPercent;
+
+    const moodMeta = MOODS.find(m => m.key === Views._registroMood);
+
+    return `
+      <div class="registro-header">
+        <button type="button" class="icon-btn" onclick="Router.go('livro',{id:'${book.id}'})" aria-label="Voltar">
+          ${icon('arrow_back', 20)}
+        </button>
+        <h1>Histórico de leitura</h1>
+      </div>
+
+      <a href="#/livro/${book.id}" class="registro-book-tag card-tap">
+        <div class="thumb">${bookCoverHtml(book)}</div>
+        <div class="meta">
+          <p>${escapeHtml(book.title)}</p>
+          <p>${escapeHtml(book.author)}</p>
+        </div>
+      </a>
+
+      <div class="type-toggle" id="rl-type-toggle">
+        <button type="button" data-type="log" class="${entryType==='log'?'active':''}" onclick="Books.setEntryType('log')">${icon('rate_review', 14)} Anotação</button>
+        <button type="button" data-type="quote" class="${entryType==='quote'?'active':''}" onclick="Books.setEntryType('quote')">${icon('format_quote', 14)} Citação</button>
+      </div>
+
+      <form onsubmit="return Books.publishRegistro(event, '${book.id}')">
+        <div class="field" style="margin-top:14px;">
+          <textarea id="rl-text" class="rl-textarea" placeholder="${entryType==='quote' ? 'Digite a citação...' : 'Escreva suas impressões (opcional)'}" ${entryType==='quote' ? 'required' : ''}></textarea>
+        </div>
+
+        <div id="rl-log-fields" style="display:${entryType==='log' ? 'block' : 'none'};">
+          <div class="card" style="margin-top:14px;">
+            <p class="section-label">Digite o seu progresso</p>
+            <div class="type-toggle" id="rl-progress-toggle" style="margin-bottom:12px;">
+              <button type="button" data-mode="paginas" class="${mode==='paginas'?'active':''}" ${!hasPages ? 'disabled' : ''} onclick="Books.setProgressMode('paginas')">Páginas</button>
+              <button type="button" data-mode="porcentagem" class="${mode==='porcentagem'?'active':''}" onclick="Books.setProgressMode('porcentagem')">Porcentagem</button>
+            </div>
+            <input type="number" id="rl-progress-value" min="0" max="${mode==='paginas' ? (book.totalPages||99999) : 100}" inputmode="numeric"
+              value="${defaultValue}" placeholder="${mode==='paginas' ? 'Ex: 94' : 'Ex: 40'}"
+              oninput="Books.updateProgressHint('${book.id}')">
+            <p class="rl-hint" id="rl-progress-hint">${registroHintText(book, mode, defaultValue)}</p>
+          </div>
+
+          <button type="button" class="rl-reaction-row" onclick="Books.toggleReactionPicker()">
+            <span class="rl-reaction-icon">${moodMeta ? icon(moodMeta.icon, 18) : icon('mood', 18)}</span>
+            <span class="rl-reaction-label">${moodMeta ? moodMeta.label : 'Adicionar reação'}</span>
+          </button>
+          <div class="mood-row" id="rl-reaction-picker" style="display:none; margin:-6px 0 16px;">
+            ${MOODS.map(m => `<button type="button" class="mood-btn ${Views._registroMood===m.key?'active':''}" data-mood="${m.key}" title="${m.label}" onclick="Books.pickRegistroMood(this,'${m.key}')">${icon(m.icon, 17)}</button>`).join('')}
+          </div>
+        </div>
+
+        <button class="btn" type="submit" style="margin-top:6px;">Publicar</button>
+      </form>
     `;
   },
 };
@@ -1802,31 +1926,93 @@ const Books = {
 
   setEntryType(type){
     Views._entryType = type;
-    View.render('livro', { id: Router.current.params.id });
+    document.querySelectorAll('#rl-type-toggle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.type === type);
+    });
+    const textarea = document.getElementById('rl-text');
+    if(textarea){
+      textarea.placeholder = type === 'quote' ? 'Digite a citação...' : 'Escreva suas impressões (opcional)';
+      textarea.required = type === 'quote';
+    }
+    const logFields = document.getElementById('rl-log-fields');
+    if(logFields) logFields.style.display = type === 'quote' ? 'none' : 'block';
   },
 
-  pickMood(btn){
-    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('active'));
+  setProgressMode(mode){
+    const bookId = Router.current.params.id;
+    const book = Data.getBook(bookId);
+    const prevMode = Views._progressMode || 'porcentagem';
+    const input = document.getElementById('rl-progress-value');
+
+    if(input && book && book.totalPages && prevMode !== mode){
+      const raw = Number(input.value) || 0;
+      if(prevMode === 'paginas' && mode === 'porcentagem'){
+        input.value = Math.round((Math.min(book.totalPages, Math.max(0, raw)) / book.totalPages) * 100);
+      }else if(prevMode === 'porcentagem' && mode === 'paginas'){
+        input.value = Math.round((Math.min(100, Math.max(0, raw)) / 100) * book.totalPages);
+      }
+    }
+    Views._progressMode = mode;
+
+    document.querySelectorAll('#rl-progress-toggle button').forEach(b => {
+      b.classList.toggle('active', b.dataset.mode === mode);
+    });
+    if(input){
+      input.max = mode === 'paginas' ? (book?.totalPages || 99999) : 100;
+      input.placeholder = mode === 'paginas' ? 'Ex: 94' : 'Ex: 40';
+    }
+    this.updateProgressHint(bookId);
+  },
+
+  updateProgressHint(bookId){
+    const book = Data.getBook(bookId);
+    if(!book) return;
+    const mode = Views._progressMode || 'porcentagem';
+    const value = document.getElementById('rl-progress-value').value;
+    const hint = document.getElementById('rl-progress-hint');
+    if(hint) hint.textContent = registroHintText(book, mode, value);
+  },
+
+  toggleReactionPicker(){
+    const el = document.getElementById('rl-reaction-picker');
+    if(el) el.style.display = el.style.display === 'none' ? 'flex' : 'none';
+  },
+
+  pickRegistroMood(btn, key){
+    Views._registroMood = key;
+    document.querySelectorAll('#rl-reaction-picker .mood-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    const meta = MOODS.find(m => m.key === key);
+    const row = document.querySelector('.rl-reaction-row');
+    if(row && meta){
+      row.querySelector('.rl-reaction-icon').innerHTML = icon(meta.icon, 18);
+      row.querySelector('.rl-reaction-label').textContent = meta.label;
+    }
+    const picker = document.getElementById('rl-reaction-picker');
+    if(picker) picker.style.display = 'none';
   },
 
-  handleAddEntry(e, bookId){
+  publishRegistro(e, bookId){
     e.preventDefault();
     const type = Views._entryType || 'log';
-    const text = document.getElementById('entry-text').value.trim();
-    if(!text) return false;
-    const spoiler = document.getElementById('entry-spoiler').checked;
+    const text = document.getElementById('rl-text').value.trim();
+    if(type === 'quote' && !text) return false;
 
     const data = Data.get();
     const book = data.books.find(b => b.id === bookId);
-    const entry = { id: uid(), bookId, type, text, spoiler, createdAt: Date.now() };
+    const entry = { id: uid(), bookId, type, text, spoiler: false, createdAt: Date.now() };
 
     if(type === 'log'){
-      const progressInput = document.getElementById('entry-progress');
-      const progress = progressInput ? Math.min(100, Math.max(0, Number(progressInput.value) || 0)) : null;
-      const moodBtn = document.querySelector('.mood-btn.active');
+      const mode = Views._progressMode || 'porcentagem';
+      const raw = Number(document.getElementById('rl-progress-value').value) || 0;
+      let progress;
+      if(mode === 'paginas' && book && book.totalPages){
+        progress = Math.round((Math.min(book.totalPages, Math.max(0, raw)) / book.totalPages) * 100);
+      }else{
+        progress = Math.min(100, Math.max(0, raw));
+      }
       entry.progress = progress;
-      entry.mood = moodBtn ? moodBtn.dataset.mood : 'neutro';
+      entry.mood = Views._registroMood || 'neutro';
 
       if(book){
         book.progress = progress;
@@ -1840,8 +2026,11 @@ const Books = {
     data.entries.push(entry);
     Data.save(data);
     Views._entryType = 'log';
-    View.render('livro', { id: bookId });
+    Views._progressMode = null;
+    Views._registroMood = null;
+    Router.go('livro', { id: bookId });
     showToast(type === 'quote' ? 'Citação publicada' : 'Registro publicado');
+    return false;
   },
 
   confirmDelete(bookId){
@@ -2119,6 +2308,30 @@ const Modals = {
     this.open('modal-quick-add');
   },
 
+  openQuickActions(){
+    this.open('modal-quick-actions');
+  },
+
+  openBookPicker(){
+    const { books } = Data.get();
+    const sorted = [...books].sort((a, b) => {
+      if(a.status === 'lendo' && b.status !== 'lendo') return -1;
+      if(b.status === 'lendo' && a.status !== 'lendo') return 1;
+      return b.updatedAt - a.updatedAt;
+    });
+    document.getElementById('book-picker-list').innerHTML = sorted.map(b => `
+      <div class="result-card card-tap" role="button" onclick="QuickActions.pickBookForRegistro('${b.id}')">
+        <div class="thumb">${bookCoverHtml(b)}</div>
+        <div class="meta">
+          <p>${escapeHtml(b.title)}</p>
+          <p>${escapeHtml(b.author)}</p>
+        </div>
+        <span class="status-pill status-${b.status}" style="flex-shrink:0;">${STATUS_LABEL[b.status]}</span>
+      </div>
+    `).join('');
+    this.open('modal-book-picker');
+  },
+
   confirm({ title, message, onConfirm }){
     document.getElementById('confirm-title').textContent = title;
     document.getElementById('confirm-message').textContent = message;
@@ -2127,6 +2340,29 @@ const Modals = {
     btn.parentNode.replaceChild(clone, btn);
     clone.addEventListener('click', onConfirm);
     this.open('modal-confirm');
+  },
+};
+
+const QuickActions = {
+  registrarLeitura(){
+    Modals.close('modal-quick-actions');
+    const { books } = Data.get();
+    if(!books.length){
+      showToast('Adicione um livro primeiro');
+      Modals.openQuickAdd();
+      return;
+    }
+    const reading = books.filter(b => b.status === 'lendo');
+    if(reading.length === 1){
+      Router.go('registro', { id: reading[0].id });
+      return;
+    }
+    Modals.openBookPicker();
+  },
+
+  pickBookForRegistro(id){
+    Modals.close('modal-book-picker');
+    Router.go('registro', { id });
   },
 };
 
