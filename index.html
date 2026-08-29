@@ -420,30 +420,32 @@
   }
   .feed-entry-menu.open{display:block;}
   .feed-entry-menu button{
-    display:flex; align-items:center; gap:8px; width:100%; padding:11px 14px;
-    font-size:13px; color:var(--danger); text-align:left;
+    display:flex; align-items:center; gap:9px; width:100%; padding:11px 14px;
+    font-size:13px; color:var(--ink); text-align:left;
   }
-  .feed-entry-menu button:hover{background:var(--danger-soft);}
-  .feed-entry-progress{margin:12px 0 4px;}
-  .feed-entry-progress .est-row{display:flex; align-items:center; justify-content:space-between; font-size:11.5px; color:var(--ink-faint); margin-bottom:6px;}
-  .feed-entry-progress .pct-row{display:flex; align-items:center; justify-content:space-between; font-size:12px; margin-top:6px;}
-  .feed-entry-progress .pct-row .pct{font-weight:800; color:var(--brand);}
-  .feed-entry-progress .pct-row .pages{color:var(--ink-soft);}
+  .feed-entry-menu button:hover{background:var(--surface-strong);}
+  .feed-entry-menu button.danger{color:var(--danger);}
+  .feed-entry-menu button.danger:hover{background:var(--danger-soft);}
+  .feed-entry-progress{margin:14px 0 4px;}
+  .feed-entry-progress .est-row{display:flex; align-items:center; justify-content:space-between; font-size:12.5px; font-weight:700; color:var(--ink); margin-bottom:7px;}
+  .feed-entry-progress .pct-row{display:flex; align-items:center; justify-content:space-between; font-size:15px; font-weight:800; margin-top:7px;}
+  .feed-entry-progress .pct-row .pct{color:var(--ink);}
+  .feed-entry-progress .pct-row .pages{color:var(--ink);}
   .feed-entry-book{
-    display:flex; align-items:center; gap:10px; margin-top:13px;
-    background:var(--paper); border-radius:var(--radius-md); padding:8px;
+    display:flex; align-items:center; gap:12px; margin-top:14px;
+    background:var(--paper); border-radius:var(--radius-md); padding:10px;
     transition:transform .15s var(--ease), box-shadow .15s var(--ease);
   }
   .feed-entry-book:active{transform:scale(.98);}
-  .feed-entry-book .thumb{width:36px; height:50px; border-radius:7px; overflow:hidden; flex-shrink:0;}
-  .feed-entry-book .meta{min-width:0; flex:1;}
-  .feed-entry-book .meta p:first-child{font-size:12.5px; font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  .feed-entry-book .meta p:last-child{font-size:11px; color:var(--ink-soft); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .feed-entry-book .meta{min-width:0; flex:1; order:1;}
+  .feed-entry-book .thumb{width:64px; height:90px; border-radius:9px; overflow:hidden; flex-shrink:0; order:2;}
+  .feed-entry-book .meta p:first-child{font-size:14px; font-weight:800; line-height:1.3; white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;}
+  .feed-entry-book .meta p:last-child{font-size:12px; color:var(--ink-soft); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 
   /* ---------- Insight carousel (início) ---------- */
   .insight-row{
     display:flex; gap:12px; overflow-x:auto;
-    margin:18px -20px 0; padding:2px 20px 12px;
+    margin:18px 0 0; padding:2px 0 12px;
     scroll-snap-type:x proximity;
   }
   .insight-row::-webkit-scrollbar{display:none;}
@@ -723,6 +725,28 @@
       </select>
     </div>
     <button class="btn" onclick="Search.confirmAdd()">Adicionar</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-edit-entry" onclick="if(event.target===this) Modals.close('modal-edit-entry')">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <h3>Editar registro</h3>
+      <button class="icon-btn" onclick="Modals.close('modal-edit-entry')"><span class="msym" style="font-size:18px">close</span></button>
+    </div>
+    <form onsubmit="return Books.saveEditEntry(event)">
+      <div class="field">
+        <textarea id="edit-entry-text" rows="3" required></textarea>
+      </div>
+      <div class="field" id="edit-entry-progress-field">
+        <label>Progresso (%)</label>
+        <input type="number" id="edit-entry-progress" min="0" max="100" inputmode="numeric">
+      </div>
+      <label class="checkbox-row" style="margin:14px 0;">
+        <input type="checkbox" id="edit-entry-spoiler"> Contém spoiler
+      </label>
+      <button class="btn" type="submit">Salvar alterações</button>
+    </form>
   </div>
 </div>
 
@@ -1077,7 +1101,10 @@ function renderFeedEntry(entry, book, index=0){
           ${icon('more_horiz', 18)}
         </button>
         <div class="feed-entry-menu" id="entry-menu-${entry.id}">
-          <button type="button" onclick="Books.deleteEntry('${entry.id}','${book.id}')">
+          <button type="button" onclick="Books.openEditEntry('${entry.id}')">
+            ${icon('edit', 16)} Editar registro
+          </button>
+          <button type="button" class="danger" onclick="Books.deleteEntry('${entry.id}','${book.id}')">
             ${icon('delete', 16)} Excluir registro
           </button>
         </div>
@@ -1088,11 +1115,11 @@ function renderFeedEntry(entry, book, index=0){
       ${progressBlock}
 
       <a href="#/livro/${book.id}" class="feed-entry-book card-tap">
-        <div class="thumb">${bookCoverHtml(book)}</div>
         <div class="meta">
           <p>${escapeHtml(book.title)}</p>
           <p>${escapeHtml(book.author)}</p>
         </div>
+        <div class="thumb">${bookCoverHtml(book)}</div>
       </a>
     </div>
   `;
@@ -1862,6 +1889,54 @@ const Books = {
         showToast('Registro excluído');
       }
     });
+  },
+
+  openEditEntry(entryId){
+    document.querySelectorAll('.feed-entry-menu.open').forEach(el => el.classList.remove('open'));
+    const { entries } = Data.get();
+    const entry = entries.find(e => e.id === entryId);
+    if(!entry) return;
+    this._editingEntryId = entryId;
+    document.getElementById('edit-entry-text').value = entry.text;
+    document.getElementById('edit-entry-spoiler').checked = !!entry.spoiler;
+    const progressField = document.getElementById('edit-entry-progress-field');
+    if(entry.type === 'log'){
+      progressField.style.display = 'flex';
+      document.getElementById('edit-entry-progress').value = entry.progress ?? 0;
+    }else{
+      progressField.style.display = 'none';
+    }
+    Modals.open('modal-edit-entry');
+  },
+
+  saveEditEntry(e){
+    e.preventDefault();
+    const id = this._editingEntryId;
+    const data = Data.get();
+    const entry = data.entries.find(x => x.id === id);
+    if(!entry) return false;
+
+    entry.text = document.getElementById('edit-entry-text').value.trim();
+    entry.spoiler = document.getElementById('edit-entry-spoiler').checked;
+
+    if(entry.type === 'log'){
+      const progress = Math.min(100, Math.max(0, Number(document.getElementById('edit-entry-progress').value) || 0));
+      entry.progress = progress;
+      const book = data.books.find(b => b.id === entry.bookId);
+      if(book){
+        book.progress = progress;
+        book.status = progress >= 100 ? 'lido' : 'lendo';
+        if(!book.startedAt) book.startedAt = Date.now();
+        book.finishedAt = progress >= 100 ? Date.now() : null;
+        book.updatedAt = Date.now();
+      }
+    }
+
+    Data.save(data);
+    Modals.close('modal-edit-entry');
+    View.render(Router.current.view, Router.current.params);
+    showToast('Registro atualizado');
+    return false;
   },
 };
 
