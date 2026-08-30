@@ -706,39 +706,6 @@
   </div>
 </div>
 
-<div class="modal-overlay" id="modal-quick-add" onclick="if(event.target===this) Modals.close('modal-quick-add')">
-  <div class="modal-sheet">
-    <div class="modal-head">
-      <h3>Adicionar livro</h3>
-      <button class="icon-btn" onclick="Modals.close('modal-quick-add')"><span class="msym" style="font-size:18px">close</span></button>
-    </div>
-    <form onsubmit="return Books.handleQuickAdd(event)">
-      <div class="field">
-        <label>Título</label>
-        <input type="text" id="qa-title" required placeholder="Nome do livro">
-      </div>
-      <div class="field">
-        <label>Autor(a)</label>
-        <input type="text" id="qa-author" required placeholder="Nome do autor(a)">
-      </div>
-      <div class="field">
-        <label>Páginas <span style="text-transform:none; font-weight:500;">— opcional</span></label>
-        <input type="number" id="qa-pages" min="1" inputmode="numeric" placeholder="Ex: 320">
-      </div>
-      <div class="field">
-        <label>Status</label>
-        <select id="qa-status">
-          <option value="quero_ler">Quero ler</option>
-          <option value="lendo">Lendo</option>
-          <option value="lido">Lido</option>
-          <option value="abandonado">Abandonado</option>
-        </select>
-      </div>
-      <button class="btn" type="submit">Adicionar à estante</button>
-    </form>
-  </div>
-</div>
-
 <div class="modal-overlay" id="modal-search-add" onclick="if(event.target===this) Modals.close('modal-search-add')">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -1351,10 +1318,10 @@ const Views = {
         </a>`;
     }else{
       heroHtml = `
-        <button class="empty-note" style="width:100%; border:1px dashed var(--border); background:var(--surface);" onclick="Modals.openQuickAdd()">
+        <button class="empty-note" style="width:100%; border:1px dashed var(--border); background:var(--surface);" onclick="Router.go('busca')">
           ${icon('auto_stories', 26)}
           <p style="font-weight:700; color:var(--ink); margin-top:8px; margin-bottom:3px;">Você não está lendo nada agora</p>
-          <p>Toque para adicionar um livro à sua estante</p>
+          <p>Toque para buscar um livro e adicionar à sua estante</p>
         </button>`;
     }
 
@@ -1501,8 +1468,8 @@ const Views = {
     return `
       <div class="row-between" style="margin-bottom:16px;">
         <h1 class="page-title" style="margin:0;">Minha estante</h1>
-        <button class="icon-btn" style="background:var(--brand); color:var(--paper);" onclick="Modals.openQuickAdd()">
-          ${icon('add', 18)}
+        <button class="icon-btn" style="background:var(--brand); color:var(--paper);" onclick="Router.go('busca')" aria-label="Buscar livro para adicionar">
+          ${icon('search', 18)}
         </button>
       </div>
 
@@ -1848,21 +1815,6 @@ const Books = {
     return book;
   },
 
-  handleQuickAdd(e){
-    e.preventDefault();
-    const title = document.getElementById('qa-title').value.trim();
-    const author = document.getElementById('qa-author').value.trim();
-    const pages = document.getElementById('qa-pages').value;
-    const status = document.getElementById('qa-status').value;
-    if(!title || !author) return false;
-    const book = this.add({ title, author, totalPages: pages ? Number(pages) : null, status });
-    Modals.close('modal-quick-add');
-    e.target.reset();
-    Router.go('livro', { id: book.id });
-    showToast('Livro adicionado à estante');
-    return false;
-  },
-
   toggleStatusMenu(evt){
     evt.stopPropagation();
     const dd = document.getElementById('status-dropdown');
@@ -2135,8 +2087,7 @@ const Search = {
       this._results = items;
 
       if(!items.length){
-        results.innerHTML = `<div class="search-empty">Nenhum resultado para "${escapeHtml(q)}". <br><br>
-          <button class="btn btn-sm" onclick="Modals.openQuickAdd()">Adicionar manualmente</button></div>`;
+        results.innerHTML = `<div class="search-empty">Nenhum resultado para "${escapeHtml(q)}". Tente outro título ou autor(a).</div>`;
         return;
       }
 
@@ -2158,8 +2109,7 @@ const Search = {
       }).join('');
     }catch(err){
       if(this._lastQuery !== q) return;
-      results.innerHTML = `<div class="search-empty">Não foi possível buscar agora. Verifique sua conexão. <br><br>
-        <button class="btn btn-sm" onclick="Modals.openQuickAdd()">Adicionar manualmente</button></div>`;
+      results.innerHTML = `<div class="search-empty">Não foi possível buscar agora. Verifique sua conexão e tente novamente.</div>`;
     }
   },
 
@@ -2272,14 +2222,6 @@ const Modals = {
   open(id){ document.getElementById(id).classList.add('open'); renderIcons(); },
   close(id){ document.getElementById(id).classList.remove('open'); },
 
-  openQuickAdd(){
-    document.getElementById('qa-title').value = '';
-    document.getElementById('qa-author').value = '';
-    document.getElementById('qa-pages').value = '';
-    document.getElementById('qa-status').value = 'quero_ler';
-    this.open('modal-quick-add');
-  },
-
   openBookPicker(){
     const { books } = Data.get();
     const sorted = [...books].sort((a, b) => {
@@ -2315,8 +2257,8 @@ const QuickActions = {
   registrarLeitura(){
     const { books } = Data.get();
     if(!books.length){
-      showToast('Adicione um livro primeiro');
-      Modals.openQuickAdd();
+      showToast('Busque um livro para adicionar primeiro');
+      Router.go('busca');
       return;
     }
     const reading = books.filter(b => b.status === 'lendo');
