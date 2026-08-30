@@ -237,15 +237,16 @@
   .nav-item.active{color:var(--brand);}
   .nav-item.active .nav-ico{background:var(--sage-soft);}
   .nav-item.active .msym{font-variation-settings:'FILL' 1,'wght' 500,'GRAD' 0,'opsz' 24;}
-  .nav-item.nav-center{flex:0 0 auto; margin:0 4px;}
-  .nav-item.nav-center .nav-ico{
-    width:50px; height:50px; border-radius:50%;
+  .fab-registro{
+    position:fixed; right:20px; bottom:90px; z-index:19;
+    width:56px; height:56px; border-radius:50%;
     background:var(--brand); color:var(--paper);
-    box-shadow:0 6px 16px rgba(38,60,32,0.32);
-    transform:translateY(-14px);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 8px 20px rgba(38,60,32,0.35);
+    transition:background .15s var(--ease), transform .15s var(--ease);
   }
-  .nav-item.nav-center span{transform:translateY(-10px);}
-  .nav-item.nav-center:hover .nav-ico{background:var(--brand-dark);}
+  .fab-registro:hover{background:var(--brand-dark);}
+  .fab-registro:active{transform:scale(.94);}
 
   /* ---------- Generic building blocks ---------- */
   .page-title{font-size:22px; margin-bottom:4px;}
@@ -549,20 +550,6 @@
   .result-card .meta p:first-child{font-size:13px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .result-card .meta p:last-child{font-size:11.5px; color:var(--ink-soft); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
-  .quick-action-row{
-    display:flex; align-items:center; gap:14px; width:100%;
-    padding:12px 4px; text-align:left; border-radius:var(--radius-md);
-    transition:background .15s var(--ease);
-  }
-  .quick-action-row:hover{background:var(--surface);}
-  .quick-action-row:not(:last-child){margin-bottom:2px;}
-  .quick-action-row .qa-ico{
-    width:42px; height:42px; border-radius:13px; background:var(--sage-soft); color:var(--brand-dark);
-    display:flex; align-items:center; justify-content:center; flex-shrink:0;
-  }
-  .quick-action-row p{font-size:14px; font-weight:700; color:var(--ink); margin-bottom:2px;}
-  .quick-action-row div span{font-size:12px; color:var(--ink-soft); font-weight:400;}
-
   /* ---------- Registrar leitura (página dedicada) ---------- */
   .registro-header{display:flex; align-items:center; margin-bottom:16px;}
   .registro-header h1{flex:1; text-align:center; font-size:16px; margin-right:34px;}
@@ -695,10 +682,6 @@
         <span class="nav-ico"><span class="msym" style="font-size:19px">collections_bookmark</span></span>
         Estante
       </button>
-      <button class="nav-item nav-center" onclick="Modals.openQuickActions()">
-        <span class="nav-ico"><span class="msym" style="font-size:22px">add</span></span>
-        <span>&nbsp;</span>
-      </button>
       <button class="nav-item" data-nav="busca" onclick="Router.go('busca')">
         <span class="nav-ico"><span class="msym" style="font-size:19px">search</span></span>
         Busca
@@ -713,23 +696,6 @@
 </div>
 
 <!-- ===================== MODALS ===================== -->
-<div class="modal-overlay" id="modal-quick-actions" onclick="if(event.target===this) Modals.close('modal-quick-actions')">
-  <div class="modal-sheet">
-    <div class="modal-head">
-      <h3>O que você quer fazer?</h3>
-      <button class="icon-btn" onclick="Modals.close('modal-quick-actions')"><span class="msym" style="font-size:18px">close</span></button>
-    </div>
-    <button type="button" class="quick-action-row" onclick="Modals.close('modal-quick-actions'); Modals.openQuickAdd();">
-      <span class="qa-ico"><span class="msym" style="font-size:20px">add_circle</span></span>
-      <div><p>Adicionar livro</p><span>Cadastrar um novo título na estante</span></div>
-    </button>
-    <button type="button" class="quick-action-row" onclick="QuickActions.registrarLeitura()">
-      <span class="qa-ico"><span class="msym" style="font-size:20px">edit_note</span></span>
-      <div><p>Registrar leitura</p><span>Anotar progresso, citação ou reação</span></div>
-    </button>
-  </div>
-</div>
-
 <div class="modal-overlay" id="modal-book-picker" onclick="if(event.target===this) Modals.close('modal-book-picker')">
   <div class="modal-sheet">
     <div class="modal-head">
@@ -1500,6 +1466,10 @@ const Views = {
 
       <h2 class="section-title" style="margin-top:22px;">Histórico de leitura</h2>
       ${feed || '<div class="empty-note">Nenhuma atividade ainda. Comece registrando o progresso de um livro.</div>'}
+
+      <button type="button" class="fab-registro" onclick="QuickActions.registrarLeitura()" aria-label="Registrar leitura">
+        ${icon('add', 26)}
+      </button>
     `;
   },
 
@@ -1836,9 +1806,11 @@ const Views = {
               <button type="button" data-mode="paginas" class="${mode==='paginas'?'active':''}" ${!hasPages ? 'disabled' : ''} onclick="Books.setProgressMode('paginas')">Páginas</button>
               <button type="button" data-mode="porcentagem" class="${mode==='porcentagem'?'active':''}" onclick="Books.setProgressMode('porcentagem')">Porcentagem</button>
             </div>
-            <input type="number" id="rl-progress-value" min="0" max="${mode==='paginas' ? (book.totalPages||99999) : 100}" inputmode="numeric"
-              value="${defaultValue}" placeholder="${mode==='paginas' ? 'Ex: 94' : 'Ex: 40'}"
-              oninput="Books.updateProgressHint('${book.id}')">
+            <div class="field" style="margin-bottom:0;">
+              <input type="number" id="rl-progress-value" min="0" max="${mode==='paginas' ? (book.totalPages||99999) : 100}" inputmode="numeric"
+                value="${defaultValue}" placeholder="${mode==='paginas' ? 'Ex: 94' : 'Ex: 40'}"
+                oninput="Books.updateProgressHint('${book.id}')">
+            </div>
             <p class="rl-hint" id="rl-progress-hint">${registroHintText(book, mode, defaultValue)}</p>
           </div>
 
@@ -2308,10 +2280,6 @@ const Modals = {
     this.open('modal-quick-add');
   },
 
-  openQuickActions(){
-    this.open('modal-quick-actions');
-  },
-
   openBookPicker(){
     const { books } = Data.get();
     const sorted = [...books].sort((a, b) => {
@@ -2345,7 +2313,6 @@ const Modals = {
 
 const QuickActions = {
   registrarLeitura(){
-    Modals.close('modal-quick-actions');
     const { books } = Data.get();
     if(!books.length){
       showToast('Adicione um livro primeiro');
