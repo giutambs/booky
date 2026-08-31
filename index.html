@@ -191,21 +191,23 @@
 
   header.topbar{
     position:sticky; top:0; z-index:20;
-    display:flex; align-items:center; justify-content:space-between;
+    display:grid; grid-template-columns:1fr auto 1fr; align-items:center;
     padding:14px 20px;
     background:rgba(255,255,255,0.85);
     backdrop-filter:blur(10px);
     -webkit-backdrop-filter:blur(10px);
     box-shadow:0 1px 0 rgba(34,48,29,.06);
   }
-  .brand-mark{display:flex; align-items:center; gap:9px;}
+  .brand-mark{display:flex; align-items:center; gap:9px; justify-self:center;}
   .brand-mark .logo-chip{
     width:32px; height:32px; border-radius:10px;
     background:var(--brand); color:var(--paper);
     display:flex; align-items:center; justify-content:center;
   }
   .brand-mark span{font-size:16px; font-weight:800;}
-  .topbar-actions{display:flex; align-items:center; gap:8px;}
+  .topbar-side{display:flex; align-items:center;}
+  .topbar-side:first-child{justify-content:flex-start;}
+  .topbar-side:last-child{justify-content:flex-end;}
   .avatar{
     width:32px; height:32px; border-radius:50%;
     background:var(--sage-soft); color:var(--brand-dark);
@@ -732,16 +734,14 @@
   <!-- ===================== APP SHELL ===================== -->
   <div id="app-shell">
     <header class="topbar">
+      <div class="topbar-side">
+        <div class="avatar" id="topbar-avatar">–</div>
+      </div>
       <div class="brand-mark">
         <div class="logo-chip"><span class="msym" style="font-size:17px">auto_stories</span></div>
         <span>Booky</span>
       </div>
-      <div class="topbar-actions">
-        <div class="avatar" id="topbar-avatar">–</div>
-        <button class="icon-btn" title="Sair" onclick="Auth.logout()">
-          <span class="msym" style="font-size:17px">power_settings_new</span>
-        </button>
-      </div>
+      <div class="topbar-side"></div>
     </header>
 
     <main class="view" id="view-container"></main>
@@ -1684,6 +1684,9 @@ const Views = {
           </button>
         `).join('')}
       </div>
+      <button class="btn btn-danger btn-sm" style="width:100%; margin-top:22px;" onclick="Auth.logout()">
+        ${icon('power_settings_new', 16)} Sair
+      </button>
     `;
   },
 
