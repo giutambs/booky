@@ -528,16 +528,14 @@
   .insight-row::-webkit-scrollbar{display:none;}
   .insight-card{
     flex:0 0 auto; width:196px; scroll-snap-align:start;
-    background:var(--surface); border-radius:var(--radius-lg); padding:16px;
+    background:var(--brand); color:var(--paper);
+    border-radius:var(--radius-lg); padding:16px;
     box-shadow:var(--shadow-sm); display:flex; flex-direction:column; gap:9px;
-    text-decoration:none; color:inherit;
+    text-decoration:none;
   }
-  .insight-card.action{background:var(--brand); color:var(--paper);}
-  .insight-card.action .star-btn{color:rgba(255,255,255,.35);}
+  .insight-card .star-btn{color:rgba(255,255,255,.35);}
   .insight-card .ins-title{font-size:13px; font-weight:800; line-height:1.25;}
-  .insight-card:not(.action) .ins-sub{color:var(--ink-soft);}
-  .insight-card.action .ins-sub{color:var(--sage-soft); opacity:.95;}
-  .insight-card .ins-sub{font-size:11.5px; line-height:1.4;}
+  .insight-card .ins-sub{color:var(--sage-soft); opacity:.95; font-size:11.5px; line-height:1.4;}
   .insight-card .ins-num{font-size:27px; font-weight:800; margin:1px 0 -2px;}
   .insight-card .ins-book{display:flex; align-items:center; gap:8px;}
   .insight-card .ins-book .thumb{width:32px; height:46px; border-radius:7px; overflow:hidden; flex-shrink:0;}
@@ -547,23 +545,22 @@
     background:var(--paper); color:var(--brand);
     border-radius:999px; padding:8px 16px; font-size:12.5px; font-weight:800;
   }
-  .insight-card:not(.action) .ins-cta{background:var(--brand); color:var(--paper);}
   .insight-card .progress-track{background:rgba(255,255,255,.25);}
-  .insight-card:not(.action) .progress-track{background:var(--surface-strong);}
+  .insight-card .progress-fill{background:var(--paper);}
 
   .insight-card.week-card{width:236px;}
   .week-strip{display:flex; gap:4px; justify-content:space-between;}
   .week-day{display:flex; flex-direction:column; align-items:center; gap:5px;}
   .week-day .dot{
-    width:22px; height:22px; border-radius:50%; background:var(--surface-strong);
+    width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,.18);
     display:flex; align-items:center; justify-content:center; color:var(--paper);
     transition:background .2s var(--ease), color .2s var(--ease);
     flex-shrink:0;
   }
   .week-day .dot .msym{font-size:13px;}
-  .week-day.active .dot{background:var(--brand);}
-  .week-day.today .dot{box-shadow:0 0 0 2px var(--brand); }
-  .week-day span{font-size:9px; color:var(--ink-soft); font-weight:700;}
+  .week-day.active .dot{background:var(--paper); color:var(--brand);}
+  .week-day.today .dot{box-shadow:0 0 0 2px var(--paper); }
+  .week-day span{font-size:9px; color:var(--sage-soft); font-weight:700; opacity:.9;}
 
   /* ---------- Book detail ---------- */
   .detail-head{display:flex; gap:14px; margin-bottom:16px;}
