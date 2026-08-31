@@ -252,6 +252,11 @@
   .fab-registro:hover{background:var(--brand-dark);}
   .fab-registro:active{transform:scale(.94);}
 
+  .btn-sair-fixed{
+    position:fixed; left:20px; right:20px; bottom:90px; z-index:19;
+    max-width:380px; margin:0 auto;
+  }
+
   /* ---------- Generic building blocks ---------- */
   .page-title{font-size:22px; margin-bottom:4px;}
   .page-sub{font-size:13.5px; color:var(--ink-soft); margin-bottom:18px;}
@@ -1680,7 +1685,7 @@ const Views = {
           </button>
         `).join('')}
       </div>
-      <button class="btn btn-danger btn-sm" style="width:100%; margin-top:22px;" onclick="Auth.logout()">
+      <button class="btn btn-danger btn-sm btn-sair-fixed" onclick="Auth.logout()">
         ${icon('power_settings_new', 16)} Sair
       </button>
     `;
