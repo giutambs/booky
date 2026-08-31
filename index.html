@@ -1027,14 +1027,14 @@ const STATUS_ORDER = ['quero_ler','lendo','lido','relendo','abandonado'];
 
 // Filtros da estante: status de leitura + as duas tags avulsas (favoritos, tenho em casa).
 const ESTANTE_FILTERS = [
-  { key:'todos', label:'Todos', color:'var(--tag-todos)' },
-  { key:'lido', label:'Lido', color:'var(--tag-lido)' },
-  { key:'lendo', label:'Lendo', color:'var(--tag-lendo)' },
-  { key:'quero_ler', label:'Quero ler', color:'var(--tag-quero_ler)' },
-  { key:'relendo', label:'Relendo', color:'var(--tag-relendo)' },
-  { key:'abandonado', label:'Abandonei', color:'var(--tag-abandonado)' },
-  { key:'favoritos', label:'Favoritos', color:'var(--tag-favoritos)' },
-  { key:'tem_em_casa', label:'Tenho em casa', color:'var(--tag-tem_em_casa)' },
+  { key:'todos', label:'Todos', color:'var(--tag-todos)', icon:'bookmark' },
+  { key:'lido', label:'Lido', color:'var(--tag-lido)', icon:'bookmark' },
+  { key:'lendo', label:'Lendo', color:'var(--tag-lendo)', icon:'bookmark' },
+  { key:'quero_ler', label:'Quero ler', color:'var(--tag-quero_ler)', icon:'bookmark' },
+  { key:'relendo', label:'Relendo', color:'var(--tag-relendo)', icon:'bookmark' },
+  { key:'abandonado', label:'Abandonei', color:'var(--tag-abandonado)', icon:'bookmark' },
+  { key:'favoritos', label:'Favoritos', color:'var(--tag-favoritos)', icon:'favorite' },
+  { key:'tem_em_casa', label:'Tenho em casa', color:'var(--tag-tem_em_casa)', icon:'home' },
 ];
 
 const MOODS = [
@@ -1620,7 +1620,7 @@ const Views = {
       <div class="estante-filter-row">
         ${ESTANTE_FILTERS.map(f => `
           <button type="button" class="estante-chip ${filter===f.key?'active':''}" style="--chip-color:${f.color};" onclick="Views.estanteFilter('${f.key}')">
-            ${icon('bookmark', 20)}
+            ${icon(f.icon, 20)}
             <span class="label">${f.label}</span>
           </button>
         `).join('')}
