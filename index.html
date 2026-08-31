@@ -695,12 +695,12 @@
       <div id="auth-error"></div>
       <form id="login-form" onsubmit="return Auth.handleLogin(event)">
         <div class="field">
-          <label>E-mail</label>
-          <input type="email" id="login-email" required autocomplete="email" placeholder="voce@email.com">
+          <label>Usuário</label>
+          <input type="text" id="login-username" required autocomplete="username" placeholder="seu usuário">
         </div>
         <div class="field">
           <label>Senha</label>
-          <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••••••">
+          <input type="password" id="login-password" required autocomplete="current-password" placeholder="••••" inputmode="numeric" pattern="\d{4}" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);">
         </div>
         <button class="btn" type="submit" id="login-submit">
           <span class="msym" style="font-size:16px">login</span> Entrar
@@ -713,12 +713,12 @@
           <input type="text" id="signup-name" required autocomplete="name" placeholder="Como podemos te chamar?">
         </div>
         <div class="field">
-          <label>E-mail</label>
-          <input type="email" id="signup-email" required autocomplete="email" placeholder="voce@email.com">
+          <label>Usuário</label>
+          <input type="text" id="signup-username" required autocomplete="username" placeholder="escolha um usuário">
         </div>
         <div class="field">
           <label>Senha</label>
-          <input type="password" id="signup-password" required minlength="6" autocomplete="new-password" placeholder="Mínimo 6 caracteres">
+          <input type="password" id="signup-password" required minlength="4" maxlength="4" autocomplete="new-password" placeholder="4 dígitos" inputmode="numeric" pattern="\d{4}" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);">
         </div>
         <button class="btn" type="submit" id="signup-submit">
           <span class="msym" style="font-size:16px">person_add</span> Criar minha conta
@@ -906,17 +906,21 @@ const Auth = {
     e.preventDefault();
     document.getElementById('auth-error').innerHTML = '';
     const name = document.getElementById('signup-name').value.trim();
-    const email = document.getElementById('signup-email').value.trim().toLowerCase();
+    const username = document.getElementById('signup-username').value.trim().toLowerCase();
     const password = document.getElementById('signup-password').value;
 
-    if(!name || !email || password.length < 6){
-      this.showError('Preencha todos os campos. A senha precisa ter pelo menos 6 caracteres.');
+    if(!name || !username){
+      this.showError('Preencha todos os campos.');
+      return false;
+    }
+    if(!/^\d{4}$/.test(password)){
+      this.showError('A senha precisa ter exatamente 4 dígitos.');
       return false;
     }
 
     const users = this.getUsers();
-    if(users.some(u => u.email === email)){
-      this.showError('Já existe uma conta com esse e-mail.');
+    if(users.some(u => u.username === username)){
+      this.showError('Já existe uma conta com esse usuário.');
       return false;
     }
 
@@ -924,7 +928,7 @@ const Auth = {
     btn.disabled = true; btn.textContent = 'Criando conta...';
 
     const passwordHash = await sha256(password);
-    const user = { id: uid(), name, email, passwordHash, createdAt: Date.now() };
+    const user = { id: uid(), name, username, passwordHash, createdAt: Date.now() };
     users.push(user);
     this.saveUsers(users);
     saveJSON(StorageKeys.data(user.id), { books: [], entries: [] });
@@ -937,21 +941,21 @@ const Auth = {
   async handleLogin(e){
     e.preventDefault();
     document.getElementById('auth-error').innerHTML = '';
-    const email = document.getElementById('login-email').value.trim().toLowerCase();
+    const username = document.getElementById('login-username').value.trim().toLowerCase();
     const password = document.getElementById('login-password').value;
 
     const btn = document.getElementById('login-submit');
     btn.disabled = true; btn.textContent = 'Entrando...';
 
     const users = this.getUsers();
-    const user = users.find(u => u.email === email);
+    const user = users.find(u => u.username === username);
     const hash = await sha256(password);
 
     btn.disabled = false; btn.innerHTML = `${icon('login', 16)} Entrar`;
     renderIcons();
 
     if(!user || user.passwordHash !== hash){
-      this.showError('E-mail ou senha incorretos.');
+      this.showError('Usuário ou senha incorretos.');
       return false;
     }
 
@@ -971,6 +975,24 @@ const Auth = {
 
   logout(){
     localStorage.removeItem(StorageKeys.session);
+    this.mode = 'login';
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    if(loginForm && signupForm){
+      loginForm.reset();
+      signupForm.reset();
+      loginForm.style.display = 'block';
+      signupForm.style.display = 'none';
+      document.getElementById('auth-title').textContent = 'Bem-vindo de volta';
+      document.getElementById('auth-sub').textContent = 'Entre para continuar de onde parou na sua estante.';
+      document.getElementById('auth-switch').innerHTML = 'Ainda não tem conta? <button type="button" onclick="Auth.toggleMode()">Criar conta</button>';
+      document.getElementById('auth-error').innerHTML = '';
+      const loginBtn = document.getElementById('login-submit');
+      loginBtn.disabled = false; loginBtn.innerHTML = `${icon('login', 16)} Entrar`;
+      const signupBtn = document.getElementById('signup-submit');
+      signupBtn.disabled = false; signupBtn.innerHTML = `${icon('person_add', 16)} Criar minha conta`;
+      renderIcons();
+    }
     App.boot();
   },
 };
@@ -1683,7 +1705,7 @@ const Views = {
         <div class="avatar lg">${initials(user.name)}</div>
         <div>
           <h2 style="font-size:16.5px;">${escapeHtml(user.name)}</h2>
-          <p style="font-size:13px; color:var(--ink-soft);">${escapeHtml(user.email)}</p>
+          <p style="font-size:13px; color:var(--ink-soft);">@${escapeHtml(user.username)}</p>
         </div>
       </div>
 
@@ -1750,8 +1772,8 @@ const Views = {
           <input type="text" id="settings-name" value="${escapeHtml(user.name)}">
         </div>
         <div class="field" style="margin-bottom:0;">
-          <label>E-mail</label>
-          <input type="email" value="${escapeHtml(user.email)}" disabled style="opacity:.65;">
+          <label>Usuário</label>
+          <input type="text" value="${escapeHtml(user.username)}" disabled style="opacity:.65;">
         </div>
       </div>
       <button class="btn btn-sm" style="width:100%; margin-bottom:22px;" onclick="Settings.saveName()">Salvar nome</button>
@@ -1761,11 +1783,11 @@ const Views = {
         <div id="password-error"></div>
         <div class="field">
           <label>Senha atual</label>
-          <input type="password" id="settings-current-password">
+          <input type="password" id="settings-current-password" inputmode="numeric" pattern="\d{4}" maxlength="4" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);">
         </div>
         <div class="field" style="margin-bottom:0;">
           <label>Nova senha</label>
-          <input type="password" id="settings-new-password" minlength="6">
+          <input type="password" id="settings-new-password" minlength="4" maxlength="4" inputmode="numeric" pattern="\d{4}" placeholder="4 dígitos" oninput="this.value=this.value.replace(/\D/g,'').slice(0,4);">
         </div>
       </div>
       <button class="btn btn-sm" style="width:100%; margin-top:8px; margin-bottom:22px;" onclick="Settings.changePassword()">Atualizar senha</button>
@@ -2341,8 +2363,8 @@ const Settings = {
       err.innerHTML = '<div class="form-error">Senha atual incorreta.</div>';
       return;
     }
-    if(next.length < 6){
-      err.innerHTML = '<div class="form-error">A nova senha precisa ter pelo menos 6 caracteres.</div>';
+    if(!/^\d{4}$/.test(next)){
+      err.innerHTML = '<div class="form-error">A nova senha precisa ter exatamente 4 dígitos.</div>';
       return;
     }
     const users = Auth.getUsers();
@@ -2357,7 +2379,7 @@ const Settings = {
   exportData(){
     const user = Auth.currentUser();
     const data = Data.get();
-    const payload = { user: { name: user.name, email: user.email }, ...data };
+    const payload = { user: { name: user.name, username: user.username }, ...data };
     const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

@@ -12,12 +12,12 @@ instalação de dependências.
 
 ## Como funciona
 
-- **Contas**: cada pessoa cria login (nome, e-mail, senha) pelo próprio
-  app. As contas e os dados de leitura ficam salvos no `localStorage` do
-  navegador — por enquanto local a cada dispositivo/navegador, sem
-  sincronização entre aparelhos (isso exigiria um backend, que pode ser
-  adicionado depois se fizer sentido). As senhas são guardadas com hash
-  SHA-256, nunca em texto puro.
+- **Contas**: cada pessoa cria login (nome, usuário, senha de 4 dígitos)
+  pelo próprio app. As contas e os dados de leitura ficam salvos no
+  `localStorage` do navegador — por enquanto local a cada
+  dispositivo/navegador, sem sincronização entre aparelhos (isso
+  exigiria um backend, que pode ser adicionado depois se fizer sentido).
+  As senhas são guardadas com hash SHA-256, nunca em texto puro.
 - **Busca de livros**: a tela de Busca consulta a
   [Google Books API](https://developers.google.com/books) para trazer
   título, autor(a), capa e número de páginas reais. Se a busca falhar
