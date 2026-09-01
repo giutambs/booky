@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Booky · Leituras pessoais</title>
+<title>Vilos · Leituras pessoais</title>
 <meta name="theme-color" content="#263C20">
 <meta name="description" content="Seu diário pessoal de leitura: estante, progresso, citações e estatísticas.">
 
@@ -747,7 +747,7 @@
         <div class="avatar" id="topbar-avatar">–</div>
       </div>
       <div class="brand-mark">
-        <span>Booky</span>
+        <span>Vilos</span>
       </div>
       <div class="topbar-side"></div>
     </header>
@@ -859,9 +859,9 @@ function renderIcons(){ /* mantido por compatibilidade; a fonte renderiza sozinh
    STORAGE
 ========================================================= */
 const StorageKeys = {
-  users: 'booky_users_v1',
-  session: 'booky_session_v1',
-  data: (uid) => `booky_data_v1_${uid}`,
+  users: 'vilos_users_v1',
+  session: 'vilos_session_v1',
+  data: (uid) => `vilos_data_v1_${uid}`,
 };
 
 function loadJSON(key, fallback){
@@ -1554,7 +1554,7 @@ const Views = {
 
     return `
       <div class="inicio-hero">
-        <p class="inicio-brand">Booky</p>
+        <p class="inicio-brand">Vilos</p>
         <div class="insight-row">${cards.join('')}</div>
       </div>
 
@@ -2409,7 +2409,7 @@ const Settings = {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'booky-dados.json';
+    a.download = 'vilos-dados.json';
     document.body.appendChild(a);
     a.click();
     a.remove();

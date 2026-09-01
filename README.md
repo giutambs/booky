@@ -1,4 +1,4 @@
-# Booky — leituras pessoais
+# Vilos — leituras pessoais
 
 Um diário de leitura pessoal em um único arquivo (`index.html`), sem
 backend: cada pessoa cria sua própria conta e mantém sua estante,
