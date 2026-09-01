@@ -528,6 +528,10 @@
     background:var(--brand);
     margin:-18px -20px 0; padding:14px 20px 18px;
   }
+  .inicio-brand{
+    text-align:center; font-size:32px; font-weight:800; color:var(--paper);
+    margin:4px 0 16px;
+  }
   .insight-row{
     display:flex; gap:12px; overflow-x:auto;
     margin:0; padding:2px 0 4px;
@@ -1550,6 +1554,7 @@ const Views = {
 
     return `
       <div class="inicio-hero">
+        <p class="inicio-brand">Booky</p>
         <div class="insight-row">${cards.join('')}</div>
       </div>
 
